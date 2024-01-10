@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="455.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.addCustomerController">
+    <children>
+        <TextField fx:id="addCustomerId" disable="true" editable="false" layoutX="82.0" layoutY="93.0" promptText="Auto - gen Customer ID" />
+        <TextField fx:id="customerNameTf" layoutX="82.0" layoutY="135.0" promptText="Customer Name" />
+        <TextField fx:id="addressTf" layoutX="82.0" layoutY="175.0" promptText="Address" />
+        <TextField fx:id="postalCodeTf" layoutX="82.0" layoutY="215.0" promptText="Postal Code" />
+        <Label layoutX="36.0" layoutY="29.0" prefHeight="44.0" prefWidth="132.0" text="Add Customer">
+            <font>
+                <Font name="System Bold" size="16.0" />
+            </font>
+        </Label>
+        <Button fx:id="addCustomerSaveHandler" layoutX="310.0" layoutY="295.0" mnemonicParsing="false" onAction="#saveCustomer" prefHeight="25.0" prefWidth="49.0" text="Save" />
+        <ComboBox fx:id="divisionCombo" layoutX="82.0" layoutY="326.0" prefWidth="150.0" promptText="Select a state/province" />
+        <ComboBox fx:id="countryCombo" layoutX="82.0" layoutY="289.0" onAction="#onSelected" prefWidth="150.0" promptText="Select a country" />
+        <TextField fx:id="phoneTf" layoutX="83.0" layoutY="252.0" promptText="Phone number" />
+    </children>
+</AnchorPane>
