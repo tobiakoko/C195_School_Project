@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class UserQuery {
 
     public static ObservableList<User> getUserList() {
-        ObservableList<User> userList = FXCollections.observableList();
+        ObservableList<User> userList = FXCollections.observableArrayList();
         try {
             PreparedStatement ps = JDBC.connection.prepareStatement("SELECT * FROM Users ");
             ResultSet rs = ps.executeQuery();
@@ -74,11 +74,12 @@ public class UserQuery {
     }
 
     public static int getUserId(String userName) throws SQLException {
+        int userId = 0;
         PreparedStatement ps = JDBC.connection.prepareStatement("SELECT User_ID, User_Name FROM Users WHERE User_Name = '" + userName + "'");
         ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
-            int userId = rs.getInt("User_ID");
+            userId = rs.getInt("User_ID");
             userName = rs.getString("User_Name");
             }
         return userId;
@@ -97,6 +98,7 @@ public class UserQuery {
             int user_ID = rs.getInt("User_ID");
             String userName = rs.getString("User_Name");
             User u = new User(user_ID, userName);
+            return u;
         } catch (SQLException e){
             throw new RuntimeException(e);
         }
