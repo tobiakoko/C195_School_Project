@@ -5,11 +5,19 @@ import java.time.LocalDateTime;
 public class Country {
     private int countryId;
     private String country;
-    private LocalDateTime createDate;
-    private String createdBy;
-    private LocalDateTime lastUpdate;
-    private String lastUpdatedBy;
+    private int monthCount;
+    private String month;
 
+
+    public Country(int countryId, String country) {
+        this.countryId = countryId;
+        this.country = country;
+    }
+
+    public Country(String month, int monthCount){
+        this.month = month;
+        this.monthCount = monthCount;
+    }
     public int getCountryId() {
         return countryId;
     }
@@ -26,37 +34,23 @@ public class Country {
         this.country = country;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
+    public int getMonthCount() {
+        return monthCount;
     }
 
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
+    public void setMonthCount(int monthCount) {
+        this.monthCount = monthCount;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
+    public String getMonth() {
+        return month;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
+    public void setMonth(String month) {
+        this.month = month;
     }
 
-    public LocalDateTime getLastUpdate() {
-        return lastUpdate;
-    }
 
-    public void setLastUpdate(LocalDateTime lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    public String getLastUpdatedBy() {
-        return lastUpdatedBy;
-    }
-
-    public void setLastUpdatedBy(String lastUpdatedBy) {
-        this.lastUpdatedBy = lastUpdatedBy;
-    }
 
     @Override
     public String toString() {
