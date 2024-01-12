@@ -30,19 +30,19 @@ public class UserQuery {
         return userList;
     }
 
-    public static boolean userLogin(String User_Name, String Password) {
+    public static int userValidation(String User_Name, String Password) {
         try(PreparedStatement ps = JDBC.connection.prepareStatement("SELECT * FROM Users WHERE User_Name = ? AND Password = ?")) {
             ps.setString(1, User_Name);
             ps.setString(2, Password);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                return true;
+                return rs.getInt("User_ID");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return -1;
     }
 
     public static boolean usernameValidation(String User_Name) {
