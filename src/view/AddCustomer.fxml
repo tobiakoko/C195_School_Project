@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddCustomer">
+    <children>
+        <Button layoutX="603.0" layoutY="524.0" mnemonicParsing="false" text="Save" />
+        <Button layoutX="710.0" layoutY="524.0" mnemonicParsing="false" text="Cancel" />
+        <Label layoutX="340.0" layoutY="35.0" text="ADD CUSTOMER" />
+        <Label layoutX="110.0" layoutY="125.0" text="ID" />
+        <Label layoutX="110.0" layoutY="191.0" text="Name" />
+        <Label layoutX="110.0" layoutY="257.0" text="Address" />
+        <Label layoutX="110.0" layoutY="323.0" text="Postal Code" />
+        <Label layoutX="110.0" layoutY="389.0" text="Phone Number" />
+        <Label layoutX="110.0" layoutY="455.0" text="Division ID" />
+        <TextField editable="false" layoutX="220.25" layoutY="120.0" promptText="Auto Gen Customer ID" />
+        <TextField layoutX="220.25" layoutY="186.0" />
+        <TextField layoutX="220.25" layoutY="252.0" />
+        <TextField layoutX="220.25" layoutY="318.0" />
+        <TextField layoutX="220.25" layoutY="384.0" />
+        <TextField layoutX="220.25" layoutY="450.0" />
+    </children>
+</AnchorPane>
