@@ -30,22 +30,23 @@ public class UserQuery {
         return userList;
     }
 
-    public static int userValidation(String User_Name, String Password) {
-        try(PreparedStatement ps = JDBC.connection.prepareStatement("SELECT * FROM Users WHERE User_Name = ? AND Password = ?")) {
-            ps.setString(1, User_Name);
-            ps.setString(2, Password);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt("User_ID");
-            }
+    public static boolean validateUser(String user_Name, String Password) {
+         try {
+            String sql = "SELECT * FROM Users WHERE User_Name = ? AND Password = ?";
+            PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+             ps.setString(1, user_Name);
+             ps.setString(2, Password);
+             ResultSet rs = ps.executeQuery();
+             if(rs.next()) {
+                 return true;
+             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+             e.printStackTrace();
+         }
+         return false;
     }
 
-    public static boolean usernameValidation(String User_Name) {
+    public static boolean validUsername(String User_Name) {
         try(PreparedStatement ps = JDBC.connection.prepareStatement("SELECT * FROM Users WHERE BINARY User_Name = ?")) {
             ps.setString(1, User_Name);
             ResultSet rs = ps.executeQuery();
@@ -59,7 +60,7 @@ public class UserQuery {
         return false;
     }
 
-    public static boolean passwordValidation(String Password) {
+    public static boolean validPassword(String Password) {
         try(PreparedStatement ps = JDBC.connection.prepareStatement("SELECT * FROM Users WHERE BINARY Password = ?")) {
             ps.setString(1, Password);
             ResultSet rs = ps.executeQuery();

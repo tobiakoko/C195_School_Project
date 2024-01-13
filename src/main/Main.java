@@ -1,24 +1,24 @@
 package main;
 
 import helper.JDBC;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.sql.SQLException;
 
 
 public class Main extends Application {
     @Override public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("../view/MainScreen.fxml"));
-        Scene scene = new Scene(root);
+        Parent parent = FXMLLoader.load(getClass().getResource("../view/LoginScreen.fxml"));
+        Scene scene = new Scene(parent, 700, 500);
         stage.setScene(scene);
         stage.setTitle("Scheduling Application");
         stage.show();
     }
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         JDBC.openConnection();
         launch(args);
         JDBC.closeConnection();

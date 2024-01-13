@@ -94,7 +94,7 @@ public class AddAppointment implements Initializable {
         }
         LocalDateTime end = LocalDateTime.of(endDate.getValue(), endTime.getValue());
 
-        Customer customer = customer.getValue().getCustomerId();
+        /*Customer customer = customer.getValue().getCustomerId();
         if (customer == null) {
             //Error 22
             return;
@@ -125,7 +125,7 @@ public class AddAppointment implements Initializable {
             AppointmentQuery.addAppointment(apptTitle, apptDescription, Location, apptType, start, end, CustomerID, userId, appointmentContact);
             //controller.Appointment.back(actionEvent);
             //confirmation 5
-        }
+        }*/
 
 
     }
@@ -145,3 +145,4 @@ public class AddAppointment implements Initializable {
         contact.setItems(contacts);
     }
 }
+

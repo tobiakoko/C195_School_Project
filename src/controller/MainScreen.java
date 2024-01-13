@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
@@ -18,8 +19,8 @@ public class MainScreen {
     @FXML private Button reportButton;
 
     @FXML void customerButton(ActionEvent actionEvent) throws IOException {
-        Parent appointmentMenu = FXMLLoader.load(getClass().getResource("../view/CustomerScreen.fxml"));
-        Scene scene = new Scene(appointmentMenu);
+        Parent parent = FXMLLoader.load(getClass().getResource("../view/CustomerScreen.fxml"));
+        Scene scene = new Scene(parent);
         Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         window.setScene(scene);
         window.show();
@@ -27,16 +28,16 @@ public class MainScreen {
 
     @FXML void appointmentButton(ActionEvent actionEvent) throws IOException {
 
-        Parent appointmentMenu = FXMLLoader.load(getClass().getResource("../view/AppointmentScreen.fxml"));
-        Scene scene = new Scene(appointmentMenu);
+        Parent parent = FXMLLoader.load(getClass().getResource("../view/AppointmentScreen.fxml"));
+        Scene scene = new Scene(parent);
         Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         window.setScene(scene);
         window.show();
     }
 
     @FXML void reportButton(ActionEvent actionEvent) throws IOException {
-        Parent appointmentMenu = FXMLLoader.load(getClass().getResource("../view/ReportScreen.fxml"));
-        Scene scene = new Scene(appointmentMenu);
+        Parent parent = FXMLLoader.load(getClass().getResource("../view/ReportScreen.fxml"));
+        Scene scene = new Scene(parent);
         Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         window.setScene(scene);
         window.show();
