@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class Customer implements Initializable {
@@ -23,9 +25,10 @@ public class Customer implements Initializable {
     @FXML private TableColumn<model.Customer, Integer> customerID;
     @FXML private TableColumn<model.Customer, String> Name;
     @FXML private TableColumn<model.Customer, String> Address;
+    @FXML private TableColumn<model.Customer, Integer> Country;
     @FXML private TableColumn<model.Customer, String> postalCode;
     @FXML private TableColumn<model.Customer, String> phoneNumber;
-    @FXML private TableColumn<model.Customer, Integer> divisionID;
+    @FXML private TableColumn<model.Customer, Integer> Division;
     @FXML private Button addCustomer;
     @FXML private Button modifyCustomer;
     @FXML private Button deleteCustomer;
@@ -38,7 +41,24 @@ public class Customer implements Initializable {
         stage.show();
     }
 
-    public void onModifyCustomer(ActionEvent actionEvent) {
+    public void onModifyCustomer(ActionEvent actionEvent) throws IOException, SQLException {
+        if(customerTable.getSelectionModel().getSelectedItem() != null) {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("../view/UpdateCustomer.fxml"));
+            loader.load();
+            UpdateCustomer MCController = loader.getController();
+            MCController.getCustomerInfo(customerTable.getSelectionModel().getSelectedItem());
+            Stage stage = (Stage)((Button) actionEvent.getSource()).getScene().getWindow();
+            Parent parent = FXMLLoader.load(getClass().getResource("../view/AddCustomer.fxml"));
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.show();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("No Selection");
+            alert.setContentText("Please select a customer to continue.");
+            alert.showAndWait();
+        }
     }
 
     public void onDeleteCustomer(ActionEvent actionEvent) {
@@ -58,8 +78,9 @@ public class Customer implements Initializable {
         customerID.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         Name.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         Address.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
+        Country.setCellValueFactory(new PropertyValueFactory<>("customerCountryName"));
         postalCode.setCellValueFactory(new PropertyValueFactory<>("customerPostalCode"));
         phoneNumber.setCellValueFactory(new PropertyValueFactory<>("customerPhone"));
-        divisionID.setCellValueFactory(new PropertyValueFactory<>("customerDivisionID"));
+        Division.setCellValueFactory(new PropertyValueFactory<>("customerDivisionID"));
     }
 }

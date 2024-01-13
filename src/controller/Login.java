@@ -4,6 +4,7 @@ import database.AppointmentQuery;
 import database.UserQuery;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -25,11 +26,11 @@ import java.time.ZoneId;
 import java.util.*;
 
 public class Login implements Initializable {
-    public TextField usernameTextField;
-    public Button cancelButton;
-    public Button loginButton;
-    public Label zoneId;
-    public PasswordField passwordTextField;
+    @FXML private TextField usernameTextField;
+    @FXML private Button cancelButton;
+    @FXML private Button loginButton;
+    @FXML private Label zoneId;
+    @FXML private PasswordField passwordTextField;
 
     public void cancelButtonAction(ActionEvent actionEvent) {
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
