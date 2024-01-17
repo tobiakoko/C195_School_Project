@@ -13,10 +13,10 @@ public class Appointment {
     private LocalDateTime end;
     private int customerId;
     private int userId;
-    private int contactId;
+    private int contact;
     private int typeTotal;
 
-    public Appointment(int appointmentId, String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, int customerId, int userId, int contactId) {
+    public Appointment(int appointmentId, String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, int customerId, int userId, int contact) {
         this.appointmentId = appointmentId;
         this.title = title;
         this.description = description;
@@ -26,7 +26,7 @@ public class Appointment {
         this.end = end;
         this.customerId = customerId;
         this.userId = userId;
-        this.contactId = contactId;
+        this.contact = contact;
     }
 
     public Appointment(String type, int typeTotal) {
@@ -106,18 +106,22 @@ public class Appointment {
         this.userId = userId;
     }
 
-    public int getContactId() {
-        return contactId;
+    public int getContact() {
+        return contact;
     }
 
-    public void setContactId(int contactId) {
-        this.contactId = contactId;
+    public void setContact(int contact) {
+        this.contact = contact;
+    }
+
+    public boolean overlaps(LocalDateTime newStart, LocalDateTime newEnd) {
+        return start.isBefore(newEnd) && end.isAfter(newStart);
     }
 
     @Override
     public String toString() {
         return ("Appointment: {" + Integer.toString(appointmentId) + "} \nCustomer: {" + Integer.toString(customerId) +
-                " } \nContact: {" + Integer.toString(contactId) + "} \n Type: " + type + " \nStart: {"+ start +
+                " } \nContact: {" + Integer.toString(contact) + "} \n Type: " + type + " \nStart: {"+ start +
                 "} \nEnd: {" + end);
     }
 }

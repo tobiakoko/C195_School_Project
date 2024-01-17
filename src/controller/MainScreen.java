@@ -13,38 +13,43 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class MainScreen {
-    @FXML private Button exitButton;
-    @FXML private Button customerButton;
-    @FXML private Button appointmentButton;
-    @FXML private Button reportButton;
 
     @FXML void customerButton(ActionEvent actionEvent) throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("../view/CustomerScreen.fxml"));
-        Scene scene = new Scene(parent);
-        Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        window.setScene(scene);
-        window.show();
+        loadScene("../view/CustomerScreen.fxml", actionEvent);
     }
 
-    @FXML void appointmentButton(ActionEvent actionEvent) throws IOException {
 
-        Parent parent = FXMLLoader.load(getClass().getResource("../view/AppointmentScreen.fxml"));
-        Scene scene = new Scene(parent);
-        Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        window.setScene(scene);
-        window.show();
+    @FXML void appointmentButton(ActionEvent actionEvent) throws IOException {
+        loadScene("../view/AppointmentScreen.fxml", actionEvent);
     }
 
     @FXML void reportButton(ActionEvent actionEvent) throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("../view/ReportScreen.fxml"));
-        Scene scene = new Scene(parent);
-        Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        window.setScene(scene);
-        window.show();
+        loadScene("../view/ReportScreen.fxml", actionEvent);
     }
 
-    @FXML void exitButton(ActionEvent ExitButton) {
-        Stage stage = (Stage) ((Node) ExitButton.getSource()).getScene().getWindow();
+    /**
+     * Event handler for the "Exit" button click.
+     *
+     * @param actionEvent
+     */
+    @FXML void exitButton(ActionEvent actionEvent) {
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.close();
+    }
+
+
+    /**
+     * Load a new scene with the given FXML file path.
+     *
+     * @param fxmlPath    The FXML file path.
+     * @param actionEvent The ActionEvent associated with the event.
+     * @throws IOException If there is an error loading the scene.
+     */
+    private void loadScene(String fxmlPath, ActionEvent actionEvent) throws IOException {
+        Parent parent = FXMLLoader.load(getClass().getResource(fxmlPath));
+        Scene scene = new Scene(parent);
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
     }
 }

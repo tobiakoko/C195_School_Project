@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UpdateAppointment">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UpdateAppointment">
     <children>
         <Button fx:id="save" layoutX="603.0" layoutY="524.0" mnemonicParsing="false" onAction="#onSave" text="Save" />
         <Button fx:id="cancel" layoutX="710.0" layoutY="524.0" mnemonicParsing="false" onAction="#onCancel" text="Cancel" />
@@ -22,7 +22,7 @@
         <Label layoutX="110.0" layoutY="439.0" text="User ID" />
         <Label layoutX="110.0" layoutY="295.0" text="Type" />
         <Label layoutX="110.0" layoutY="331.0" text="Start Date" />
-        <TextField editable="false" layoutX="220.25" layoutY="112.0" promptText="auto-gen" />
+        <TextField fx:id="appointmentId" editable="false" layoutX="220.25" layoutY="112.0" promptText="auto-gen" />
         <TextField fx:id="Title" layoutX="220.25" layoutY="148.0" />
         <TextField fx:id="Description" layoutX="220.25" layoutY="182.0" />
         <TextField fx:id="Location" layoutX="220.25" layoutY="218.0" />

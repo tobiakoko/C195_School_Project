@@ -1,6 +1,7 @@
 package controller;
 
 import database.AppointmentQuery;
+import helper.Util;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,6 +18,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -40,23 +42,25 @@ public class Appointment implements Initializable {
     @FXML private Button deleteAppointment;
     @FXML private Button updateAppointment;
 
+    model.Appointment selectedAppointment = appointmentTable.getSelectionModel().getSelectedItem();
     ObservableList<model.Appointment> AppointmentList = FXCollections.observableArrayList();
 
-    public void onAllAppointment(ActionEvent actionEvent) {
+    @FXML void onAllAppointment(ActionEvent actionEvent) {
+        LocalDate now = LocalDate.now();
         appointmentTable.setItems(AppointmentQuery.getAppointmentList());
     }
 
-    public void onMonthlyAppointment(ActionEvent actionEvent) {
+    @FXML void onMonthlyAppointment(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentQuery.getMonthlyAppointment());
         appointmentTable.setPlaceholder(new Label("Currently, no appointments exist within the next month."));
     }
 
-    public void onWeeklyAppointment(ActionEvent actionEvent) {
+    @FXML void onWeeklyAppointment(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentQuery.getApptByWeek());
         appointmentTable.setPlaceholder(new Label("Currently, no appointments exist within the next week."));
     }
 
-    public void onAddAppointment(ActionEvent actionEvent) throws IOException {
+    @FXML void onAddAppointment(ActionEvent actionEvent) throws IOException {
         Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("./view/AddAppointment.fxml")));
         Scene scene = new Scene(parent);
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -64,10 +68,9 @@ public class Appointment implements Initializable {
         stage.show();
     }
 
-    public void onDeleteAppointment(ActionEvent actionEvent) {
-        model.Appointment selectedAppointment = appointmentTable.getSelectionModel().getSelectedItem();
+    @FXML void onDeleteAppointment(ActionEvent actionEvent) {
         if(selectedAppointment == null ) {
-
+            Util.confirmAlert("No Appointments Selected", "No appointment selected. Please selected an appointment to delete");
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Alert");
@@ -95,44 +98,57 @@ public class Appointment implements Initializable {
         }
     }
 
-    public void onUpdateAppointment(ActionEvent actionEvent) throws IOException {
-        if(appointmentTable.getSelectionModel().getSelectedItem() != null) {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("./view/MainScreen.fxml"));
-            UpdateAppointment MCController = loader.getController();
-            MCController.getAppointmentInfo(appointmentTable.getSelectionModel().getSelectedItem());
+    @FXML void onUpdateAppointment(ActionEvent actionEvent) throws IOException {
+        if(selectedAppointment != null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("./view/UpdateAppointment.fxml"));
+            Parent parent = loader.load();
+            UpdateAppointment modifyAppointment = loader.getController();
+            modifyAppointment.modifyAppointment(selectedAppointment);
+
             Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
-            Parent scene = loader.getRoot();
-            stage.setScene(new Scene(scene));
+            stage.setScene(new Scene(parent));
             stage.show();
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("No Appointment Selected");
-            alert.setContentText("NO appointment was selected");
-            alert.showAndWait();
+            Util.errorAlert("No Appointment Selected", "No Appointment was selected. Please select an appointment");
         }
     }
 
-    public void back(ActionEvent actionEvent) throws IOException {
-        Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("./view/MainScreen.fxml")));
-        Scene scene = new Scene(parent);
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
+    @FXML void back(ActionEvent actionEvent) throws IOException {
+        loadScene("./view/MainScreen.fxml", actionEvent);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        appointment = new ToggleGroup();
+        this.weeklyAppointment.setToggleGroup(appointment);
+        this.monthlyAppointment.setToggleGroup(appointment);
+
         appointmentTable.setItems(AppointmentQuery.getAppointmentList());
         appointmentID.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
-        title.setCellValueFactory(new PropertyValueFactory<>("appointmentTitle"));
-        description.setCellValueFactory(new PropertyValueFactory<>("appointmentDescription"));
-        location.setCellValueFactory(new PropertyValueFactory<>("appointmentLocation"));
-        contact.setCellValueFactory(new PropertyValueFactory<>("appointmentContact"));
-        type.setCellValueFactory(new PropertyValueFactory<>("appointmentType"));
-        start.setCellValueFactory(new PropertyValueFactory<>("appointmentStart"));
-        end.setCellValueFactory(new PropertyValueFactory<>("appointmentEnd"));
-        customerID.setCellValueFactory(new PropertyValueFactory<>("appointmentCustomerId"));
-        userID.setCellValueFactory(new PropertyValueFactory<>("appointmentUserId"));
+        title.setCellValueFactory(new PropertyValueFactory<>("title"));
+        description.setCellValueFactory(new PropertyValueFactory<>("description"));
+        location.setCellValueFactory(new PropertyValueFactory<>("location"));
+        contact.setCellValueFactory(new PropertyValueFactory<>("contact"));
+        type.setCellValueFactory(new PropertyValueFactory<>("type"));
+        start.setCellValueFactory(new PropertyValueFactory<>("start"));
+        end.setCellValueFactory(new PropertyValueFactory<>("end"));
+        customerID.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+        userID.setCellValueFactory(new PropertyValueFactory<>("userId"));
+    }
+
+
+    /**
+     * Load a new scene with the given FXML file path.
+     *
+     * @param fxmlPath    The FXML file path.
+     * @param actionEvent The ActionEvent associated with the event.
+     * @throws IOException If there is an error loading the scene.
+     */
+    private void loadScene(String fxmlPath, ActionEvent actionEvent) throws IOException {
+        Parent parent = FXMLLoader.load(getClass().getResource(fxmlPath));
+        Scene scene = new Scene(parent);
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
     }
 }

@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainScreen">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainScreen">
     <children>
         <GridPane alignment="CENTER" layoutX="242.0" layoutY="155.0" prefHeight="90.0" prefWidth="116.0">
             <columnConstraints>
@@ -19,12 +19,12 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Button fx:id="customerButton" mnemonicParsing="false" onAction="#customerButton" prefHeight="25.0" prefWidth="137.0" text="Customers" />
-                <Button fx:id="appointmentButton" mnemonicParsing="false" onAction="#appointmentButton" prefHeight="25.0" prefWidth="116.0" text="Appointments" GridPane.rowIndex="1" />
-                <Button fx:id="reportButton" mnemonicParsing="false" onAction="#reportButton" prefHeight="25.0" prefWidth="122.0" text="Reports" GridPane.rowIndex="2" />
+                <Button mnemonicParsing="false" onAction="#customerButton" prefHeight="25.0" prefWidth="137.0" text="Customers" />
+                <Button mnemonicParsing="false" onAction="#appointmentButton" prefHeight="25.0" prefWidth="116.0" text="Appointments" GridPane.rowIndex="1" />
+                <Button mnemonicParsing="false" onAction="#reportButton" prefHeight="25.0" prefWidth="122.0" text="Reports" GridPane.rowIndex="2" />
             </children>
         </GridPane>
-        <Button fx:id="exitButton" layoutX="498.0" layoutY="335.0" mnemonicParsing="false" onAction="#exitButton" text="Exit" />
+        <Button layoutX="498.0" layoutY="335.0" mnemonicParsing="false" onAction="#exitButton" text="Exit" />
         <Label alignment="CENTER" layoutX="211.0" layoutY="47.0" prefHeight="38.0" prefWidth="178.0" text="MAIN SCREEN" />
     </children>
 </AnchorPane>

@@ -1,8 +1,6 @@
 package controller;
 
 import database.AppointmentQuery;
-import database.UserQuery;
-import helper.JDBC;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,18 +12,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Appointment;
-import model.User;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -39,7 +31,6 @@ public class Login implements Initializable {
     @FXML private Label zoneId;
     @FXML private PasswordField passwordTextField;
     private static final String LOGIN_ACTIVITY_FILE = "login_activity.txt";
-    boolean success = false;
 
     //Language bundle to automatically translate error control message into English or French based on the user's computer language setting
     ResourceBundle rb = ResourceBundle.getBundle("language/login", Locale.getDefault());
@@ -107,12 +98,12 @@ public class Login implements Initializable {
 
                     if((startTime.isAfter(now) || startTime.isEqual(upcomingAppt)) &&
                         startTime.isBefore(upcomingAppt) || startTime.isEqual(now)){
-                        showApptsAlert(appointment);
+                        showAppointmentAlert(appointment);
                         userValid = true;
                     }
                 }
                 if (!userValid) {
-                    showNoApptsAlert();
+                    showNoAppointmentAlert();
                 }
             }
 
@@ -123,8 +114,6 @@ public class Login implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-            //LocalDateTime ldt = LocalDateTime.now(ZoneId.systemDefault());
-
             //Determine the user's location(i.e Zone ID) and display it in a label on the log-in form
             Locale locale = Locale.getDefault();
             Locale.setDefault(locale);
@@ -137,22 +126,22 @@ public class Login implements Initializable {
     }
 
 
-    private void showApptsAlert(Appointment appointment) {
+    private void showAppointmentAlert(Appointment appointment) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(null);
         alert.setContentText(rb.getString("Appointment") + " " + appointment.getAppointmentId() + " " + rb.getString("beginsat") + " " +  appointment.getStart());
         alert.showAndWait();
     }
 
-    private void showNoApptsAlert() {
+    private void showNoAppointmentAlert() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(null);
         alert.setContentText(rb.getString("NoUpcomingAppointments"));
         alert.showAndWait();
     }
 
+    //Username + TimeStamp at login_activity.txt
     public void loginAttempt(String username, LocalDateTime timestamp, boolean success) {
-
         String logEntry;
         if(success) {
             logEntry = String.format("Username: %s, Timestamp: %s, Success: %s%n", username, timestamp, true);
@@ -167,7 +156,7 @@ public class Login implements Initializable {
             e.printStackTrace();
         }
         /*
-        outputFile.print("user: " + usernameInput + "successfully logged in at: " + Timestamp.valueOf(LocalDateTime.now()) + "\n");
+        outputFile.print("user: " + username + "successfully logged in at: " + Timestamp.valueOf(LocalDateTime.now()) + "\n");
          * FileWriter fileWriter = new FileWriter("login_activity.txt", true);
          * PrintWriter outputFile = new PrintWriter(fileWriter);
          * DateFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy hh:mm:ss");
