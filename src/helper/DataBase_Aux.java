@@ -2,6 +2,7 @@ package helper;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+
 public abstract class DataBase_Aux {
     private static final String protocol = "jdbc";
     private static final String vendor = ":mysql:";

@@ -3,12 +3,10 @@ package helper;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import model.Appointment;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class Util {
-
     private static final int BUSINESS_START_HOUR = 8;
     private static final int BUSINESS_END_HOUR = 22;
 
