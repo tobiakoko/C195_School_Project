@@ -11,7 +11,7 @@
     <children>
         <Button fx:id="save" layoutX="603.0" layoutY="524.0" mnemonicParsing="false" onAction="#onSave" text="Save" />
         <Button fx:id="cancel" layoutX="710.0" layoutY="524.0" mnemonicParsing="false" onAction="#onCancel" text="Cancel" />
-        <Label alignment="CENTER" layoutX="340.0" layoutY="35.0" prefHeight="30.0" prefWidth="220.0" text="ADD APPOINTMENT" textAlignment="CENTER" />
+        <Label alignment="CENTER" layoutX="340.0" layoutY="35.0" prefHeight="30.0" prefWidth="220.0" text="UPDATE APPOINTMENT" textAlignment="CENTER" />
         <Label layoutX="110.0" layoutY="117.0" text="ID" />
         <Label layoutX="110.0" layoutY="153.0" text="Title" />
         <Label layoutX="110.0" layoutY="187.0" text="Description" />
@@ -27,8 +27,6 @@
         <TextField fx:id="Description" layoutX="220.25" layoutY="182.0" />
         <TextField fx:id="Location" layoutX="220.25" layoutY="218.0" />
         <TextField fx:id="Type" layoutX="220.25" layoutY="290.0" />
-        <TextField fx:id="customerId" layoutX="220.25" layoutY="398.0" />
-        <TextField fx:id="userId" layoutX="220.25" layoutY="434.0" />
         <Label layoutX="443.0" layoutY="331.0" text="Start TIme" />
         <Label layoutX="445.0" layoutY="367.0" text="End Time" />
       <ComboBox fx:id="Contact" layoutX="220.0" layoutY="255.0" prefWidth="150.0" />
@@ -36,5 +34,7 @@
       <ComboBox fx:id="endTime" layoutX="549.0" layoutY="362.0" prefWidth="150.0" />
       <DatePicker fx:id="startDate" layoutX="208.0" layoutY="327.0" />
       <DatePicker fx:id="endDate" layoutX="208.0" layoutY="362.0" />
+      <ComboBox fx:id="customerId" layoutX="220.0" layoutY="399.0" prefWidth="150.0" />
+      <ComboBox fx:id="userId" layoutX="220.0" layoutY="435.0" prefWidth="150.0" />
     </children>
 </AnchorPane>

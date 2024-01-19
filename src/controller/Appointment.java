@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -42,7 +43,6 @@ public class Appointment implements Initializable {
     @FXML private Button deleteAppointment;
     @FXML private Button updateAppointment;
 
-    model.Appointment selectedAppointment = appointmentTable.getSelectionModel().getSelectedItem();
     ObservableList<model.Appointment> AppointmentList = FXCollections.observableArrayList();
 
     @FXML void onAllAppointment(ActionEvent actionEvent) {
@@ -69,47 +69,52 @@ public class Appointment implements Initializable {
     }
 
     @FXML void onDeleteAppointment(ActionEvent actionEvent) {
-        if(selectedAppointment == null ) {
-            Util.confirmAlert("No Appointments Selected", "No appointment selected. Please selected an appointment to delete");
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Alert");
-            alert.setContentText("Would you like to remove the selected appointment?");
-            alert.getButtonTypes().clear();
-            alert.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
-            alert.showAndWait();
-            if (alert.getResult() == ButtonType.OK){
-                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-                confirm.setTitle("Alert");
-                confirm.setContentText("Appointment ID " + appointmentTable.getSelectionModel().getSelectedItem().getAppointmentId() + " for " +
-                        appointmentTable.getSelectionModel().getSelectedItem().getType() + "has been deleted" );
-                confirm.getButtonTypes().clear();
-                confirm.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
-                confirm.showAndWait();
+        model.Appointment selectedAppointment = appointmentTable.getSelectionModel().getSelectedItem();
+        if (selectedAppointment == null) {
+            Util.confirmAlert("No Appointments Selected", "No appointment selected. Please select an appointment to delete");
+            return;
+        }
 
-                AppointmentQuery.deleteAppointment(appointmentTable.getSelectionModel().getSelectedItem().getAppointmentId());
-                AppointmentList = AppointmentQuery.getAppointmentList();
-                appointmentTable.setItems(AppointmentList);
-                appointmentTable.refresh();
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Alert");
+        alert.setContentText("Would you like to remove the selected appointment?");
+        alert.getButtonTypes().clear();
+        alert.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
+        alert.showAndWait();
 
-            } else if (alert.getResult() == ButtonType.CANCEL) {
-                alert.close();
-            }
+        if (alert.getResult() == ButtonType.OK) {
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("Alert");
+            confirm.setContentText("Appointment ID " + selectedAppointment.getAppointmentId() + " for " +
+                    selectedAppointment.getType() + " has been deleted");
+            confirm.getButtonTypes().clear();
+            confirm.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
+            confirm.showAndWait();
+
+            AppointmentQuery.deleteAppointment(selectedAppointment.getAppointmentId());
+            AppointmentList = AppointmentQuery.getAppointmentList();
+            appointmentTable.setItems(AppointmentList);
+            appointmentTable.refresh();
+        } else if (alert.getResult() == ButtonType.CANCEL) {
+            alert.close();
         }
     }
 
     @FXML void onUpdateAppointment(ActionEvent actionEvent) throws IOException {
-        if(selectedAppointment != null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("./view/UpdateAppointment.fxml"));
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UpdateAppointment.fxml"));
             Parent parent = loader.load();
             UpdateAppointment modifyAppointment = loader.getController();
+            model.Appointment selectedAppointment = appointmentTable.getSelectionModel().getSelectedItem();
             modifyAppointment.modifyAppointment(selectedAppointment);
 
             Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(parent));
             stage.show();
-        } else {
+        } catch (RuntimeException e) {
             Util.errorAlert("No Appointment Selected", "No Appointment was selected. Please select an appointment");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

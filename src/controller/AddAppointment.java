@@ -32,6 +32,9 @@ import static helper.Util.errorAlert;
 import static helper.Util.validationFunction;
 
 public class AddAppointment implements Initializable {
+
+    @FXML private ComboBox<Customer> customerBox;
+    @FXML private ComboBox<User> userBox;
     @FXML private Button save;
     @FXML private Button cancel;
     @FXML private TextField appointmentID;
@@ -40,53 +43,85 @@ public class AddAppointment implements Initializable {
     @FXML private TextField location;
     @FXML private ComboBox<Contact> contact;
     @FXML private TextField type;
-    @FXML private ComboBox<Customer> customerComboBox;
-    @FXML private ComboBox<User> userComboBox;
     @FXML private ComboBox<LocalTime> startTime;
     @FXML private ComboBox<LocalTime> endTime;
     @FXML private DatePicker startDate;
     @FXML private DatePicker endDate;
 
     public void onSave(ActionEvent actionEvent) throws IOException, SQLException {
-        String apptTitle = title.getText();
-        String apptDescription = description.getText();
-        String apptType = type.getText();
-
-        Contact apptContact = contact.getValue();
-        if (apptContact == null) {
-            errorAlert("Please select a valid contact", "Please select a valid contact");
-            return;
-        }
-        int appointmentContact = apptContact.getContactId();
-
+        /*
+        int appointment_Id = selectedAppointment.getAppointmentId();
+        String title = Title.getText();
+        String description = Description.getText();
+        String type = Type.getText();
+        String location = Location.getText();
+        int contactID = Contact.getSelectionModel().getSelectedItem().getContactId();
+        int customerID = customerId.getSelectionModel().getSelectedItem().getCustomerId();
+        int userID = userId.getSelectionModel().getSelectedItem().getUserId();
         LocalDate start_date = startDate.getValue();
+        LocalTime start_time = startTime.getSelectionModel().getSelectedItem();
+        LocalDate end_date = endDate.getValue();
+        LocalTime end_time = endTime.getSelectionModel().getSelectedItem();
+        LocalDateTime start_date_time = LocalDateTime.of(start_date.getYear(), start_date.getMonth(), start_date.getDayOfMonth(), start_time.getHour(), start_time.getMinute());
+        LocalDateTime end_date_time = LocalDateTime.of(end_date.getYear(), end_date.getMonth(), end_date.getDayOfMonth(), end_time.getHour(), end_time.getMinute());
+
+        if(title.isBlank() || title.isEmpty()) {
+            errorAlert("Please select a valid contact", "Please select a valid contact");
+        } else if(description.isBlank() || description.isEmpty()) {
+            errorAlert("Please select a valid contact", "Please select a valid contact");
+        } else if(type.isBlank() || type.isEmpty()) {
+            errorAlert("Please select a valid contact", "Please select a valid contact");
+        } else if (location.isBlank() || location.isEmpty()) {
+            errorAlert("Please select a valid contact", "Please select a valid contact");
+        } else {
+            //Appointment Time OverLap and Business hours validation needed here
+            AppointmentQuery.modifyAppointment(appointment_Id, title, description, location, type, start_date_time, end_date_time, customerID, userID, contactID);
+
+            Parent parent = FXMLLoader.load(getClass().getResource("../view/Appointments.fxml"));
+            Scene scene = new Scene(parent);
+            Stage stage = (Stage)((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        }
+         */
+
+        String Title = title.getText();
+        String Description = description.getText();
+        String Type = type.getText();
+        String Location = location.getText();
+        int Contact = contact.getSelectionModel().getSelectedItem().getContactId();
+        int customer_Id = customerBox.getSelectionModel().getSelectedItem().getCustomerId();
+        int user_Id = userBox.getSelectionModel().getSelectedItem().getUserId();
+        LocalDate start_date = startDate.getValue();
+        LocalTime start_time = startTime.getSelectionModel().getSelectedItem();
+        LocalDate end_date = endDate.getValue();
+        LocalTime end_time = endTime.getSelectionModel().getSelectedItem();
+        LocalDateTime start_date_time = LocalDateTime.of(start_date.getYear(), start_date.getMonth(), start_date.getDayOfMonth(), start_time.getHour(), start_time.getMinute());
+        LocalDateTime end_date_time = LocalDateTime.of(end_date.getYear(), end_date.getMonth(), end_date.getDayOfMonth(), end_time.getHour(), end_time.getMinute());
+
+
         if(start_date == null) {
             errorAlert("Please select a valid start date", "The start date field is blank. Please choose a date");
             return;
-        }
-
-        LocalTime start_time = startTime.getValue();
-        if(start_time == null) {
+        }else if(start_time == null) {
             errorAlert("Please select a valid start time", "The start time field is blank. Please choose a start time");
             return;
-        }
-        LocalDateTime start = LocalDateTime.of(startDate.getValue(), startTime.getValue());
-
-        LocalDate end_date = endDate.getValue();
-        if(end_date == null) {
+        }else if(end_date == null) {
             errorAlert("Please select a valid end date", "The end date field is blank. Please choose a date");
-
             return;
-        }
-
-        LocalTime end_time = endTime.getValue();
-        if(end_time == null) {
+        }else if(end_time == null) {
             errorAlert("Please select a valid end time", "The end time field is blank. Please choose a time");
-
             return;
-        }
-        LocalDateTime end = LocalDateTime.of(endDate.getValue(), endTime.getValue());
+        } else {
+            //Appointment Time OverLap and Business hours validation needed here
+            AppointmentQuery.addAppointment(Title, Description, Location, Type, start_date_time, end_date_time, customer_Id, user_Id, Contact);
 
+            Parent parent = FXMLLoader.load(getClass().getResource("../view/Appointments.fxml"));
+            Scene scene = new Scene(parent);
+            Stage stage = (Stage)((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        }
     }
 
     public void onCancel(ActionEvent actionEvent) throws IOException {
@@ -107,10 +142,10 @@ public class AddAppointment implements Initializable {
 
         contact.setItems(contacts);
         contact.getSelectionModel().selectFirst();
-        userComboBox.setItems(users);
-        userComboBox.getSelectionModel().selectFirst();
-        customerComboBox.setItems(customers);
-        customerComboBox.getSelectionModel().selectFirst();
+        userBox.setItems(users);
+        userBox.getSelectionModel().selectFirst();
+        customerBox.setItems(customers);
+        customerBox.getSelectionModel().selectFirst();
         startDate.setValue(LocalDate.now());
         endDate.setValue(LocalDate.now());
         startTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), LocalTime.of(8, 0), 13));
@@ -119,21 +154,6 @@ public class AddAppointment implements Initializable {
         endTime.getSelectionModel().selectFirst();
         //validationFunction(appointmentDateTime,  existingAppointments, newAppointmentStart, newAppointmentEnd);
 
-
-        /*
-            private ObservableList<Customer> masterData = FXCollections.observableArrayList();
-            private final ObservableList<String> startTimes = FXCollections.observableArrayList();
-            private final ObservableList<String> endTimes = FXCollections.observableArrayList();
-            private final DateTimeFormatter timeDTF = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
-            private final DateTimeFormatter dateDTF = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
-            ObservableList<Appointment> apptTimeList;
-
-
-            ZoneId osZId = ZoneId.systemDefault();
-            ZoneId businessZId = ZoneId.of("America/New_York");
-            LocalTime startTime = LocalTime.of(8, 0);
-            int workHours = 13;
-         */
     }
 
 private static  ObservableList<LocalTime> initializeBusinessHours(ZoneId systemZoneId, ZoneId businessZoneId, LocalTime startHour, int workingHours) {
