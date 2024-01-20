@@ -64,7 +64,7 @@ public class Customer implements Initializable {
             stage.show();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("No Selection");
+            alert.setTitle("SELECTION ERROR");
             alert.setContentText("Please select a customer to continue.");
             alert.showAndWait();
         }
@@ -101,7 +101,7 @@ public class Customer implements Initializable {
             }
 
         } else {
-            errorAlert("NO Selection", "Please select a customer for deletion.");
+            errorAlert("SELECTION ERROR", "Please select a customer for deletion.");
         }
     }
 

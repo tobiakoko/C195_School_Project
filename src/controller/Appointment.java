@@ -20,6 +20,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -48,20 +49,17 @@ public class Appointment implements Initializable {
     ObservableList<model.Appointment> AppointmentList = FXCollections.observableArrayList();
 
     @FXML void onAllAppointment(ActionEvent actionEvent) {
-        LocalDate now = LocalDate.now();
         appointmentTable.setItems(AppointmentQuery.getAppointmentList());
         appointmentTable.refresh();
     }
 
     @FXML void onMonthlyAppointment(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentQuery.getMonthlyAppointment());
-        appointmentTable.setPlaceholder(new Label("Currently, no appointments exist within the next month."));
         appointmentTable.refresh();
     }
 
     @FXML void onWeeklyAppointment(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentQuery.getApptByWeek());
-        appointmentTable.setPlaceholder(new Label("Currently, no appointments exist within the next week."));
         appointmentTable.refresh();
     }
 
@@ -76,7 +74,7 @@ public class Appointment implements Initializable {
     @FXML void onDeleteAppointment(ActionEvent actionEvent) {
         model.Appointment selectedAppointment = appointmentTable.getSelectionModel().getSelectedItem();
         if (selectedAppointment == null) {
-            confirmAlert("No Appointments Selected", "No appointment selected. Please select an appointment to delete");
+            confirmAlert("SELECTION ERROR", "No appointment selected. Please select an appointment to delete");
             return;
         }
 
@@ -90,8 +88,7 @@ public class Appointment implements Initializable {
         if (alert.getResult() == ButtonType.OK) {
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
             confirm.setTitle("Alert");
-            confirm.setContentText("Appointment ID " + selectedAppointment.getAppointmentId() + " for " +
-                    selectedAppointment.getType() + " has been deleted");
+            confirm.setContentText("Appointment has been deleted");
             confirm.getButtonTypes().clear();
             confirm.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
             confirm.showAndWait();
@@ -118,7 +115,7 @@ public class Appointment implements Initializable {
             stage.setScene(new Scene(parent));
             stage.show();
         } catch (RuntimeException e) {
-            Util.errorAlert("No Appointment Selected", "No Appointment was selected. Please select an appointment");
+            Util.errorAlert("SELECTION ERROR", "No Appointment was selected. Please select an appointment");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -130,7 +127,6 @@ public class Appointment implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //appointment = new ToggleGroup();
         this.allAppointment.setToggleGroup(appointment);
         this.weeklyAppointment.setToggleGroup(appointment);
         this.monthlyAppointment.setToggleGroup(appointment);

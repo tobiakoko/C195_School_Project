@@ -7,8 +7,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import helper.Util;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 /**
  * Main class for the Scheduling Application.
@@ -46,6 +49,8 @@ public class Main extends Application {
      */
     public static void main(String[] args) {
         JDBC.openConnection();
+        Util obj = new Util();
+        obj.convertToSystemTimeZone(LocalDateTime.now());
         launch(args);
         JDBC.closeConnection();
     }

@@ -180,11 +180,38 @@ public class AppointmentQuery {
                 Appointment results = new Appointment(appointmentId, title, description, location, type, start, end, customerId, userId, contactId);
                 userAppointments.add(results);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return userAppointments;
+    }
+
+    public static ObservableList<Appointment> getAppointments (int customerId){
+        ObservableList<Appointment> customerAppointment = FXCollections.observableArrayList();
+        try {
+            String sql = "SELECT * FROM appointments WHERE Customer_ID =? ";
+            PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+            ps.setInt(1, customerId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int appointmentId = rs.getInt("Appointment_ID");
+                String title = rs.getString("Title");
+                String description = rs.getString("Description");
+                String location = rs.getString("Location");
+                String type = rs.getString("Type");
+                LocalDateTime start = rs.getTimestamp("Start").toLocalDateTime();
+                LocalDateTime end = rs.getTimestamp("End").toLocalDateTime();
+                customerId = rs.getInt("customer_ID");
+                int userId = rs.getInt("User_ID");
+                int contactId = rs.getInt("Contact_ID");
+                Appointment results = new Appointment(appointmentId, title, description, location, type, start, end, customerId, userId, contactId);
+                customerAppointment.add(results);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customerAppointment;
     }
 
     public static ObservableList<Appointment> getContactAppointment( int contactID) {

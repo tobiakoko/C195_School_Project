@@ -50,41 +50,7 @@ public class AddAppointment implements Initializable {
     @FXML private DatePicker endDate;
 
     public void onSave(ActionEvent actionEvent) throws IOException, SQLException {
-        /*
-        int appointment_Id = selectedAppointment.getAppointmentId();
-        String title = Title.getText();
-        String description = Description.getText();
-        String type = Type.getText();
-        String location = Location.getText();
-        int contactID = Contact.getSelectionModel().getSelectedItem().getContactId();
-        int customerID = customerId.getSelectionModel().getSelectedItem().getCustomerId();
-        int userID = userId.getSelectionModel().getSelectedItem().getUserId();
-        LocalDate start_date = startDate.getValue();
-        LocalTime start_time = startTime.getSelectionModel().getSelectedItem();
-        LocalDate end_date = endDate.getValue();
-        LocalTime end_time = endTime.getSelectionModel().getSelectedItem();
-        LocalDateTime start_date_time = LocalDateTime.of(start_date.getYear(), start_date.getMonth(), start_date.getDayOfMonth(), start_time.getHour(), start_time.getMinute());
-        LocalDateTime end_date_time = LocalDateTime.of(end_date.getYear(), end_date.getMonth(), end_date.getDayOfMonth(), end_time.getHour(), end_time.getMinute());
-
-        if(title.isBlank() || title.isEmpty()) {
-            errorAlert("Please select a valid contact", "Please select a valid contact");
-        } else if(description.isBlank() || description.isEmpty()) {
-            errorAlert("Please select a valid contact", "Please select a valid contact");
-        } else if(type.isBlank() || type.isEmpty()) {
-            errorAlert("Please select a valid contact", "Please select a valid contact");
-        } else if (location.isBlank() || location.isEmpty()) {
-            errorAlert("Please select a valid contact", "Please select a valid contact");
-        } else {
-            //Appointment Time OverLap and Business hours validation needed here
-            AppointmentQuery.modifyAppointment(appointment_Id, title, description, location, type, start_date_time, end_date_time, customerID, userID, contactID);
-
-            Parent parent = FXMLLoader.load(getClass().getResource("../view/Appointments.fxml"));
-            Scene scene = new Scene(parent);
-            Stage stage = (Stage)((Node) actionEvent.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-        }
-         */
+        //validateOverlapping(int customerId, LocalDateTime start, LocalDateTime end);
 
         String Title = title.getText();
         String Description = description.getText();
@@ -103,7 +69,7 @@ public class AddAppointment implements Initializable {
 
         if(start_date == null) {
             errorAlert("Please select a valid start date", "The start date field is blank. Please choose a date");
-            return;
+
         }else if(start_time == null) {
             errorAlert("Please select a valid start time", "The start time field is blank. Please choose a start time");
             return;

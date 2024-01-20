@@ -1,5 +1,6 @@
 package helper;
 
+import database.AppointmentQuery;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -7,6 +8,7 @@ import javafx.scene.control.ButtonType;
 import model.Appointment;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 public class Util {
@@ -55,8 +57,31 @@ public class Util {
         };
     }
 
+    public static boolean validateOverlapping(int customerId, LocalDateTime start, LocalDateTime end){
+        ObservableList<Appointment> appointments = AppointmentQuery.getAppointments(customerId);
 
-    public static LocalDateTime localDateTime() {
-        return LocalDateTime.now(ZoneId.systemDefault());
+        for(Appointment appointment: appointments) {
+            LocalDateTime appointmentStart = appointment.getStart();
+            LocalDateTime appointmentEnd = appointment.getEnd();
+            if(appointmentStart.isEqual(start) || appointmentEnd.isEqual(end)) {
+                errorAlert("OVERLAP ERROR", "Start time cannot be the same as End time");
+                return true;
+            } else if(start.isAfter(appointmentStart) && end.isAfter(appointmentEnd)) {
+                errorAlert("OVERLAP ERROR", "Appointment start overlap not allowed.");
+                return true;
+            } else if (start.isAfter(appointmentStart) && start.isBefore(appointmentEnd)) {
+                errorAlert("OVERLAP ERROR", "Appointment end overlap not allowed");
+                return true;
+            } else if (end.isAfter(appointmentStart) && end.isBefore(appointmentEnd)) {
+                errorAlert("OVERLAP ERROR","Appointment end overlap not allowed" );
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ZonedDateTime convertToSystemTimeZone(LocalDateTime time){
+        ZoneId systemZone = ZoneId.systemDefault();
+        return ZonedDateTime.of(time, systemZone);
     }
 }
