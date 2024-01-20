@@ -3,6 +3,8 @@ package controller;
 import database.CountryQuery;
 import database.CustomerQuery;
 import database.DivisionQuery;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,10 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.Country;
 import model.Customer;
@@ -25,14 +24,14 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static helper.Util.errorAlert;
 import static java.time.LocalDateTime.now;
 
 public class UpdateCustomer implements Initializable {
-    @FXML private Button save;
-    @FXML private Button cancel;
+
     @FXML private TextField customerID;
     @FXML private TextField Name;
     @FXML private TextField Address;
@@ -52,7 +51,7 @@ public class UpdateCustomer implements Initializable {
         model.Country c = CountryQuery.returnCountry(customer.getCustomerId());
         Country.setValue(c);
         model.Country C = Country.getValue();
-        Division.setItems(DivisionQuery.displayDivision(d.getCountryId()));
+        Division.setItems(DivisionQuery.displayDivision(C.getCountryId()));
     }
 
     public void onSave(ActionEvent actionEvent) {
@@ -83,9 +82,9 @@ public class UpdateCustomer implements Initializable {
             int country_ID = Country.getValue().getCountryId();
             String lastUpdatedBy = "script";
             Timestamp lastUpdated = Timestamp.valueOf(now());
-            CustomerQuery.updateCustomer(customer_ID, name, address, postal_Code, phone, lastUpdatedBy, division_ID, country_ID, lastUpdated);
+            CustomerQuery.updateCustomer(customer_ID, name, address, postal_Code, phone, division_ID);
 
-            Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("./view/CustomerScreen.fxml")));
+            Parent parent = FXMLLoader.load(getClass().getResource("../view/CustomerScreen.fxml"));
             Scene scene = new Scene(parent);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(scene);
@@ -96,23 +95,31 @@ public class UpdateCustomer implements Initializable {
     }
 
     public void onCancel(ActionEvent actionEvent) throws IOException {
-        Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("./view/CustomerScreen.fxml")));
-        Scene scene = new Scene(parent);
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
-    }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm cancellation");
+        alert.setContentText("Are you sure you want to leave this page? Changes will not be saved");
+        alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+        Optional<ButtonType> result = alert.showAndWait();
 
-    public void onDivision(ActionEvent actionEvent) {
-    }
-
-    public void onCountry(ActionEvent actionEvent) {
-        model.Country c = Country.getValue();
-        try{
-            Division.setItems(DivisionQuery.displayDivision(c.getCountryId()));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        if(result.isPresent() && result.get() == ButtonType.YES) {
+            Parent parent = FXMLLoader.load(getClass().getResource("../view/CustomerScreen.fxml"));
+            Scene scene = new Scene(parent);
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
         }
+    }
+
+    public void onCountry(ActionEvent actionEvent) throws SQLException {
+        //model.Country c = Country.getValue();
+        //try{
+       //     Division.setItems(DivisionQuery.displayDivision(c.getCountryId()));
+       // } catch (SQLException e) {
+        //    throw new RuntimeException(e);
+       // }
+        int county_Id = Country.getValue().getCountryId();
+        Division.setItems(DivisionQuery.displayDivision(county_Id));
+        Division.getSelectionModel().selectFirst();
     }
 
     @Override

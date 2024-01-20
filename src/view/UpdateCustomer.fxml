@@ -8,9 +8,9 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UpdateCustomer">
     <children>
-        <Button fx:id="save" layoutX="603.0" layoutY="524.0" mnemonicParsing="false" onAction="#onSave" text="Save" />
-        <Button fx:id="cancel" layoutX="710.0" layoutY="524.0" mnemonicParsing="false" onAction="#onCancel" text="Cancel" />
-        <Label layoutX="340.0" layoutY="35.0" text="ADD CUSTOMER" />
+        <Button layoutX="603.0" layoutY="524.0" mnemonicParsing="false" onAction="#onSave" text="Save" />
+        <Button layoutX="710.0" layoutY="524.0" mnemonicParsing="false" onAction="#onCancel" text="Cancel" />
+        <Label layoutX="340.0" layoutY="35.0" text="UPDATE CUSTOMER" />
         <Label layoutX="110.0" layoutY="125.0" text="ID" />
         <Label layoutX="110.0" layoutY="191.0" text="Name" />
         <Label layoutX="110.0" layoutY="257.0" text="Address" />
@@ -22,7 +22,7 @@
         <TextField fx:id="Address" layoutX="220.25" layoutY="252.0" />
         <TextField fx:id="postalCode" layoutX="220.25" layoutY="318.0" />
         <TextField fx:id="phoneNumber" layoutX="220.25" layoutY="384.0" />
-      <ComboBox fx:id="Division" layoutX="220.0" layoutY="450.0" onAction="#onDivision" prefWidth="150.0" />
+      <ComboBox fx:id="Division" layoutX="220.0" layoutY="450.0" prefWidth="150.0" />
       <ComboBox fx:id="Country" layoutX="569.0" layoutY="253.0" onAction="#onCountry" prefWidth="150.0" />
       <Label layoutX="479.0" layoutY="256.0" text="Country" />
     </children>

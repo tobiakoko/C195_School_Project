@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -116,7 +117,7 @@ public class AddAppointment implements Initializable {
             //Appointment Time OverLap and Business hours validation needed here
             AppointmentQuery.addAppointment(Title, Description, Location, Type, start_date_time, end_date_time, customer_Id, user_Id, Contact);
 
-            Parent parent = FXMLLoader.load(getClass().getResource("../view/Appointments.fxml"));
+            Parent parent = FXMLLoader.load(getClass().getResource("../view/Appointment.fxml"));
             Scene scene = new Scene(parent);
             Stage stage = (Stage)((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(scene);
@@ -125,11 +126,19 @@ public class AddAppointment implements Initializable {
     }
 
     public void onCancel(ActionEvent actionEvent) throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("../view/Appointments.fxml"));
-        Scene scene = new Scene(parent);
-        Stage stage = (Stage)((Node) actionEvent.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm cancellation");
+        alert.setContentText("Are you sure you want to leave this page? Changes will not be saved");
+        alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if(result.isPresent() && result.get() == ButtonType.YES) {
+            Parent parent = FXMLLoader.load(getClass().getResource("../view/AppointmentScreen.fxml"));
+            Scene scene = new Scene(parent);
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        }
     }
 
     @Override

@@ -1,0 +1,8 @@
+Username: sqlUser, Timestamp: 2024-01-19T22:10:25.288585600, Success: false
+Username: sqlUser, Timestamp: 2024-01-19T22:10:25.288585600, Success: false
+Username: Username, Timestamp: 2024-01-19T19:14:08.246320200, Success: false
+Username: sqlUser, Timestamp: 2024-01-19T19:14:08.246320200, Success: false
+Username: sqlUser, Timestamp: 2024-01-19T19:14:08.246320200, Success: false
+Username: sqlUser, Timestamp: 2024-01-19T21:19:33.231938300, Success: false
+Username: sqlUser, Timestamp: 2024-01-19T21:19:33.231938300, Success: false
+Username: admin, Timestamp: 2024-01-19T21:20:23.522137800, Success: true

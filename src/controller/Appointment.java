@@ -23,6 +23,8 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+import static helper.Util.confirmAlert;
+
 public class Appointment implements Initializable {
     @FXML private RadioButton allAppointment;
     @FXML private ToggleGroup appointment;
@@ -48,20 +50,23 @@ public class Appointment implements Initializable {
     @FXML void onAllAppointment(ActionEvent actionEvent) {
         LocalDate now = LocalDate.now();
         appointmentTable.setItems(AppointmentQuery.getAppointmentList());
+        appointmentTable.refresh();
     }
 
     @FXML void onMonthlyAppointment(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentQuery.getMonthlyAppointment());
         appointmentTable.setPlaceholder(new Label("Currently, no appointments exist within the next month."));
+        appointmentTable.refresh();
     }
 
     @FXML void onWeeklyAppointment(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentQuery.getApptByWeek());
         appointmentTable.setPlaceholder(new Label("Currently, no appointments exist within the next week."));
+        appointmentTable.refresh();
     }
 
     @FXML void onAddAppointment(ActionEvent actionEvent) throws IOException {
-        Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("./view/AddAppointment.fxml")));
+        Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../view/AddAppointment.fxml")));
         Scene scene = new Scene(parent);
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.setScene(scene);
@@ -71,7 +76,7 @@ public class Appointment implements Initializable {
     @FXML void onDeleteAppointment(ActionEvent actionEvent) {
         model.Appointment selectedAppointment = appointmentTable.getSelectionModel().getSelectedItem();
         if (selectedAppointment == null) {
-            Util.confirmAlert("No Appointments Selected", "No appointment selected. Please select an appointment to delete");
+            confirmAlert("No Appointments Selected", "No appointment selected. Please select an appointment to delete");
             return;
         }
 
@@ -100,9 +105,10 @@ public class Appointment implements Initializable {
         }
     }
 
+
     @FXML void onUpdateAppointment(ActionEvent actionEvent) throws IOException {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UpdateAppointment.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/UpdateAppointment.fxml"));
             Parent parent = loader.load();
             UpdateAppointment modifyAppointment = loader.getController();
             model.Appointment selectedAppointment = appointmentTable.getSelectionModel().getSelectedItem();
@@ -119,12 +125,13 @@ public class Appointment implements Initializable {
     }
 
     @FXML void back(ActionEvent actionEvent) throws IOException {
-        loadScene("./view/MainScreen.fxml", actionEvent);
+        loadScene("../view/MainScreen.fxml", actionEvent);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        appointment = new ToggleGroup();
+        //appointment = new ToggleGroup();
+        this.allAppointment.setToggleGroup(appointment);
         this.weeklyAppointment.setToggleGroup(appointment);
         this.monthlyAppointment.setToggleGroup(appointment);
 

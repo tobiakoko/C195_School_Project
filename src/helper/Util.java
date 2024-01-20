@@ -2,9 +2,12 @@ package helper;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import model.Appointment;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 public class Util {
     private static final int BUSINESS_START_HOUR = 8;
@@ -22,6 +25,7 @@ public class Util {
         alert.setTitle(title);
         alert.setContentText(content);
     }
+
 
     private static void validateBusinessHours(LocalDateTime appointmentDateTime) {
         // Validate that an appointment is scheduled within business hours

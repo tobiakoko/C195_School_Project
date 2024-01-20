@@ -48,7 +48,7 @@ public class DivisionQuery {
             ResultSet rs = ps.getResultSet();
 
             rs.next();
-            int division_ID = rs.getInt("Divison_ID");
+            int division_ID = rs.getInt("Division_ID");
             String division = rs.getString("Division");
             Division s = new Division(division_ID, division);
             return s;

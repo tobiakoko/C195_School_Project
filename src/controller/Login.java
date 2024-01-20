@@ -23,6 +23,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static database.UserQuery.*;
+import static helper.Util.errorAlert;
 
 public class Login implements Initializable {
     @FXML private TextField usernameTextField;
@@ -33,15 +34,13 @@ public class Login implements Initializable {
     private static final String LOGIN_ACTIVITY_FILE = "login_activity.txt";
 
     //Language bundle to automatically translate error control message into English or French based on the user's computer language setting
-    ResourceBundle rb = ResourceBundle.getBundle("language/login", Locale.getDefault());
+    ResourceBundle rb = ResourceBundle.getBundle("language/lang", Locale.getDefault());
     LocalDateTime now = LocalDateTime.now();
 
     public void cancelButtonAction(ActionEvent actionEvent) {
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.close();
     }
-
-
 
     public void loginButtonAction(ActionEvent actionEvent) throws Exception {
         try {
@@ -51,43 +50,29 @@ public class Login implements Initializable {
 
             //Username and Password Validation Check
             if (usernameInput.isEmpty() || usernameInput.isBlank()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Username Field Blank");
-                alert.setHeaderText(null); // No header
-                alert.setContentText("Blank username field. Please try again.");
+                errorAlert(rb.getString("UsernameFieldBlank"), rb.getString("BlankusernamefieldPleasetryagain"));
             } else if (!validUsername(usernameInput) && !validPassword(passwordInput)) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Invalid Username or Password");
-                alert.setHeaderText(null); // No header
-                alert.setContentText("Invalid username or password entry. Please try again.");
+                errorAlert(rb.getString("InvalidUsernameorPassword"), rb.getString("InvalidusernameorpasswordentryPleasetryagain"));
                 loginAttempt(usernameInput, now, false);
             } else if (passwordInput.isEmpty() || passwordInput.isBlank()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Password Field Blank");
-                alert.setHeaderText(null); // No header
-                alert.setContentText("Blank password field. Please try again");
+                errorAlert(rb.getString("InvalidUsernameorPassword"), rb.getString("BlankpasswordfieldPleasetryagain"));
             } else if (!validUsername(usernameInput)) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Invalid Username");
-                alert.setHeaderText(null); // No header
-                alert.setContentText("Invalid username entry. Please try again.");
+                errorAlert(rb.getString("InvalidUsername"), rb.getString("InvalidusernameentryPleasetryagain"));
                 loginAttempt(usernameInput, now, false);
             } else if (!validPassword(passwordInput)) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Invalid Password");
-                alert.setHeaderText(null); // No header
-                alert.setContentText("Invalid password entry. Please try again.");
+                errorAlert(rb.getString("InvalidPassword"), rb.getString("InvalidpasswordentryPleasetryagain"));
                 loginAttempt(usernameInput, now, false);
             } else if (validateUser(usernameInput, passwordInput)) {
                 int userID = getUserId(usernameInput);
                 ObservableList<Appointment> appointments = AppointmentQuery.getUserAppointment(userID);
+
                 Parent parent = FXMLLoader.load(getClass().getResource("../view/MainScreen.fxml"));
                 Scene scene = new Scene(parent);
                 Stage stage = (Stage)((Node) actionEvent.getSource()).getScene().getWindow();
                 stage.setScene(scene);
                 stage.show();
-                loginAttempt(usernameInput, now, true);
 
+                loginAttempt(usernameInput, now, true);
 
                 //Check for appointments upon successful login
                 boolean userValid = false;
@@ -117,12 +102,13 @@ public class Login implements Initializable {
             //Determine the user's location(i.e Zone ID) and display it in a label on the log-in form
             Locale locale = Locale.getDefault();
             Locale.setDefault(locale);
+
             ZoneId zone = ZoneId.systemDefault();
             zoneId.setText(String.valueOf(zone));
-            usernameTextField.setText(rb.getString("username"));
-            passwordTextField.setText(rb.getString("password"));
+            usernameTextField.setText(rb.getString("Username"));
+            passwordTextField.setText(rb.getString("Password"));
             loginButton.setText(rb.getString("Login"));
-            cancelButton.setText(rb.getString("Exit"));
+            cancelButton.setText(rb.getString("Cancel"));
     }
 
 
@@ -140,7 +126,6 @@ public class Login implements Initializable {
         alert.showAndWait();
     }
 
-    //Username + TimeStamp at login_activity.txt
     public void loginAttempt(String username, LocalDateTime timestamp, boolean success) {
         String logEntry;
         if(success) {
@@ -155,21 +140,5 @@ public class Login implements Initializable {
         }catch (IOException e) {
             e.printStackTrace();
         }
-        /*
-        outputFile.print("user: " + username + "successfully logged in at: " + Timestamp.valueOf(LocalDateTime.now()) + "\n");
-         * FileWriter fileWriter = new FileWriter("login_activity.txt", true);
-         * PrintWriter outputFile = new PrintWriter(fileWriter);
-         * DateFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy hh:mm:ss");
-         * ZoneId localZone = ZoneId.systemDefault();
-         *
-         * if (loginSuccess) {
-         *    fwritter.write(txtFieldUserName.getText() + " has successfully logged in on " + formatter.format(currentTime));
-         *    } else if (!loginSuccess) {
-         *    fwritter.write(txtFieldUserName.getText() + " has failed login on " + formatter.format(currentTime));
-         *    }
-         *     fwritter.write("\n");
-         *     fwritter.close();
-         * */
     }
-
 }

@@ -6,15 +6,15 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import model.Appointment;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 
 public class AppointmentQuery {
 
-    static ObservableList<Appointment> frequency = FXCollections.observableArrayList();
+    static ObservableList<Appointment> appointments = FXCollections.observableArrayList();
+    static LocalDateTime now = LocalDateTime.now();
+    static LocalDateTime weekLater = now.plusWeeks(1);
+    static LocalDateTime monthLater = now.plusMonths(1);
 
     public static ObservableList<Appointment> getAppointmentList() {
         ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
@@ -89,12 +89,14 @@ public class AppointmentQuery {
         }
     }
 
-    public static FilteredList<Appointment> getApptByWeek(){
-        frequency = getAppointmentList();
-        FilteredList<Appointment> weeklyFiltered = new FilteredList<>(frequency);
+    public static ObservableList<Appointment> getApptByWeek(){
+        appointments = getAppointmentList();
         try {
-            String sql = "SELECT * FROM appointments INNER JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID WHERE YEARWEEK(START) = YEARWEEK(NOW()) ORDER BY appointments.Appointment_ID";
-            PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+            String query = "SELECT * FROM appointments INNER JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID WHERE Start >=? AND Start <= ?";
+            PreparedStatement ps = JDBC.connection.prepareStatement(query);
+            ps.setTimestamp(1, Timestamp.valueOf(now));
+            ps.setTimestamp(2, Timestamp.valueOf(weekLater));
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int appointmentId = rs.getInt("Appointment_ID");
@@ -104,36 +106,38 @@ public class AppointmentQuery {
                 String type = rs.getString("Type");
                 LocalDateTime start = rs.getTimestamp("Start").toLocalDateTime();
                 LocalDateTime end = rs.getTimestamp("End").toLocalDateTime();
-                int customerId = rs.getInt("customer_ID");
+                int customerId = rs.getInt("Customer_ID");
                 int userId = rs.getInt("User_ID");
                 int contactId = rs.getInt("Contact_ID");
                 Appointment byWeek = new Appointment(appointmentId, title, description, location, type, start, end, customerId, userId, contactId);
-                weeklyFiltered.add(byWeek);
+                appointments.add(byWeek);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return weeklyFiltered;
+        return appointments;
     }
 
     public static void deleteAppointment(int appointmentId){
         try {
             String sql = "DELETE FROM appointments WHERE Appointment_ID = ?";
-            PreparedStatement delAppointment = JDBC.connection.prepareStatement(sql);
-            delAppointment.setInt(1, appointmentId);
+            PreparedStatement preparedStatement = JDBC.connection.prepareStatement(sql);
+            preparedStatement.setInt(1, appointmentId);
+            preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static FilteredList<Appointment> getMonthlyAppointment(){
-        //ObservableList<Appointment> monthly = FXCollections.observableArrayList();
-        frequency = getAppointmentList();
-        FilteredList<Appointment> monthlyFiltered = new FilteredList<>(frequency);
+    public static ObservableList<Appointment> getMonthlyAppointment(){
+        appointments = getAppointmentList();
         try {
-            String sql = "SELECT * FROM appointments INNER JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID WHERE MONTH(START) = MONTH(NOW()) ORDER BY appointments.Appointment_ID";
+            String sql = "SELECT * FROM appointments INNER JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID WHERE WHERE Start >=? AND Start <=?";
             PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+            ps.setTimestamp(1, Timestamp.valueOf(now));
+            ps.setTimestamp(2, Timestamp.valueOf(monthLater));
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int appointmentId = rs.getInt("Appointment_ID");
@@ -143,17 +147,17 @@ public class AppointmentQuery {
                 String type = rs.getString("Type");
                 LocalDateTime start = rs.getTimestamp("Start").toLocalDateTime();
                 LocalDateTime end = rs.getTimestamp("End").toLocalDateTime();
-                int customerId = rs.getInt("customer_ID");
+                int customerId = rs.getInt("Customer_ID");
                 int userId = rs.getInt("User_ID");
                 int contactId = rs.getInt("Contact_ID");
                 Appointment byMonth = new Appointment(appointmentId, title, description, location, type, start, end, customerId, userId, contactId);
-                monthlyFiltered.add(byMonth);
+                appointments.add(byMonth);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return monthlyFiltered;
+        return appointments;
     }
 
     public static ObservableList<Appointment> getUserAppointment(int userID){
@@ -187,8 +191,8 @@ public class AppointmentQuery {
         ObservableList<Appointment> contactAppointments = FXCollections.observableArrayList();
         try {
             String sql = "SELECT * FROM appointments WHERE User_ID = ' " + contactID + " ' ";
-            PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            PreparedStatement preparedStatement = JDBC.connection.prepareStatement(sql);
+            ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 int appointmentId = rs.getInt("Appointment_ID");
                 String title = rs.getString("Title");
@@ -213,9 +217,9 @@ public class AppointmentQuery {
     public static ObservableList<Appointment> AppointmentType(){
         ObservableList<Appointment> appointmentListType = FXCollections.observableArrayList();
         try {
-            String sql = "SELECT Type, Count(*) AS NUM FROM appointments GROUP BY Type";
-            PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            String query = "SELECT Type, Count(*) AS NUM FROM appointments GROUP BY Type";
+            PreparedStatement preparedStatement = JDBC.connection.prepareStatement(query);
+            ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 String type = rs.getString("Type");
                 int typeTotal = rs.getInt("NUM");
