@@ -55,11 +55,13 @@ public class Appointment implements Initializable {
 
     @FXML void onMonthlyAppointment(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentQuery.getMonthlyAppointment());
+        appointmentTable.setPlaceholder(new Label("No appointments exist within the next month"));
         appointmentTable.refresh();
     }
 
     @FXML void onWeeklyAppointment(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentQuery.getApptByWeek());
+        appointmentTable.setPlaceholder(new Label("No appointments exist within the next week"));
         appointmentTable.refresh();
     }
 

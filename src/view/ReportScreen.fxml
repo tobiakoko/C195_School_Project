@@ -9,51 +9,66 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/20.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Report">
-    <Label alignment="CENTER" layoutX="450.0" layoutY="38.0" prefHeight="25.0" prefWidth="300.0" text="REPORTS TABLE"/>
-    <Button fx:id="back" layoutX="941.0" layoutY="538.0" mnemonicParsing="false" onAction="#onBack" text="Back"/>
+<AnchorPane prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Report">
+    <Label alignment="CENTER" layoutX="450.0" layoutY="38.0" prefHeight="25.0" prefWidth="300.0" text="REPORTS TABLE" />
+    <Button fx:id="back" layoutX="941.0" layoutY="538.0" mnemonicParsing="false" onAction="#onBack" text="Back" />
     <TabPane layoutX="31.0" layoutY="83.0" prefHeight="400.0" prefWidth="1157.0" tabClosingPolicy="UNAVAILABLE">
         <Tab fx:id="customerCountTab" text="Customer Appointment Report">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="353.0" prefWidth="200.0">
-                <TableView fx:id="customerCountTable" layoutX="33.0" layoutY="34.0" prefHeight="301.0"
-                           prefWidth="1084.0">
+                <TableView fx:id="typeCountTable" layoutX="14.0" layoutY="35.0" prefHeight="301.0" prefWidth="557.0">
                     <columns>
-                        <TableColumn fx:id="countColumn" prefWidth="75.0" text="Total"/>
-                        <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Type"/>
-                        <TableColumn fx:id="monthColumn" prefWidth="75.0" text="By Month"/>
+                        <TableColumn fx:id="typeTotal" prefWidth="75.0" text="Total" />
+                        <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Type" />
                     </columns>
                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                 </TableView>
+            <TableView fx:id="monthCountTable" layoutX="579.0" layoutY="35.0" prefHeight="301.0" prefWidth="557.0">
+               <columns>
+                  <TableColumn fx:id="monthTotal" prefWidth="75.0" text="Total" />
+                  <TableColumn fx:id="monthColumn" prefWidth="75.0" text="By Month" />
+               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
             </AnchorPane>
         </Tab>
         <Tab fx:id="contactScheduleTab" text="Individual Contacts Report">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                <TableView fx:id="contactScheduleTable" layoutX="20.0" layoutY="39.0" prefHeight="325.0"
-                           prefWidth="1111.0">
+                <TableView fx:id="contactScheduleTable" layoutX="20.0" layoutY="39.0" prefHeight="325.0" prefWidth="1111.0">
                     <columns>
-                        <TableColumn fx:id="appointmentID" prefWidth="75.0" text="Appointment ID"/>
-                        <TableColumn fx:id="title" prefWidth="75.0" text="Title"/>
-                        <TableColumn fx:id="type" prefWidth="75.0" text="Type"/>
-                        <TableColumn fx:id="description" prefWidth="75.0" text="Description"/>
-                        <TableColumn fx:id="start" prefWidth="75.0" text="Start"/>
-                        <TableColumn fx:id="end" prefWidth="75.0" text="End"/>
-                        <TableColumn fx:id="customerID" prefWidth="75.0" text="Customer ID"/>
-                        <TableColumn fx:id="contact" prefWidth="75.0" text="Contact"/>
+                        <TableColumn fx:id="appointmentID" prefWidth="75.0" text="Appointment ID" />
+                        <TableColumn fx:id="title" prefWidth="75.0" text="Title" />
+                        <TableColumn fx:id="type" prefWidth="75.0" text="Type" />
+                        <TableColumn fx:id="description" prefWidth="75.0" text="Description" />
+                        <TableColumn fx:id="start" prefWidth="75.0" text="Start" />
+                        <TableColumn fx:id="end" prefWidth="75.0" text="End" />
+                        <TableColumn fx:id="customerID" prefWidth="75.0" text="Customer ID" />
+                        <TableColumn fx:id="contact" prefWidth="75.0" text="Contact" />
                     </columns>
                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                 </TableView>
-                <ComboBox fx:id="contactCombo" layoutX="200.0" layoutY="7.0" onAction="#onContactCombo"
-                          prefWidth="150.0"/>
-                <Label layoutX="88.0" layoutY="11.0" text="Select a Contact"/>
+                <ComboBox fx:id="contactCombo" layoutX="200.0" layoutY="7.0" onAction="#onContactCombo" prefWidth="150.0" />
+                <Label layoutX="88.0" layoutY="11.0" text="Select a Contact" />
             </AnchorPane>
         </Tab>
-        <Tab text="Random Reports">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+        <Tab text="Country Report">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <children>
+               <TableView fx:id="monthTable" layoutX="223.0" layoutY="14.0" prefHeight="344.0" prefWidth="598.0">
+                 <columns>
+                   <TableColumn fx:id="monthCount" prefWidth="75.0" text="Total" />
+                   <TableColumn fx:id="month" prefWidth="75.0" text="Country" />
+                 </columns>
+                  <columnResizePolicy>
+                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                  </columnResizePolicy>
+               </TableView>
+            </children></AnchorPane>
         </Tab>
     </TabPane>
 </AnchorPane>

@@ -27,7 +27,7 @@ public class Main extends Application {
      */
     @Override public void start(Stage stage) throws IOException {
         //Load the main FXML view
-        Parent parent = FXMLLoader.load(getClass().getResource("../view/MainScreen.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource("../view/LoginScreen.fxml"));
         Scene scene = new Scene(parent, 700, 500);
         stage.setScene(scene);
         stage.setTitle("Scheduling Application");

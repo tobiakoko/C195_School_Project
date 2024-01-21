@@ -9,8 +9,8 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UpdateAppointment">
     <children>
-        <Button fx:id="save" layoutX="603.0" layoutY="524.0" mnemonicParsing="false" onAction="#onSave" text="Save" />
-        <Button fx:id="cancel" layoutX="710.0" layoutY="524.0" mnemonicParsing="false" onAction="#onCancel" text="Cancel" />
+        <Button layoutX="603.0" layoutY="524.0" mnemonicParsing="false" onAction="#onSave" text="Save" />
+        <Button layoutX="710.0" layoutY="524.0" mnemonicParsing="false" onAction="#onCancel" text="Cancel" />
         <Label alignment="CENTER" layoutX="340.0" layoutY="35.0" prefHeight="30.0" prefWidth="220.0" text="UPDATE APPOINTMENT" textAlignment="CENTER" />
         <Label layoutX="110.0" layoutY="117.0" text="ID" />
         <Label layoutX="110.0" layoutY="153.0" text="Title" />

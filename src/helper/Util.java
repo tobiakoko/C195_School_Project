@@ -6,9 +6,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import model.Appointment;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+
+import java.time.*;
 import java.util.Optional;
 
 public class Util {
@@ -29,9 +28,9 @@ public class Util {
     }
 
 
-    private static void validateBusinessHours(LocalDateTime appointmentDateTime) {
+    private static void validateBusinessHours(LocalTime startTime, LocalTime endTime) {
         // Validate that an appointment is scheduled within business hours
-        int appointmentHour = appointmentDateTime.getHour();
+        int appointmentHour = startTime.getHour();
         if (appointmentHour < BUSINESS_START_HOUR || appointmentHour >= BUSINESS_END_HOUR) {
             //Error Statement
             errorAlert("Out of Bounds Error", "Appointments must be scheduled between 8:00 a.m. and 10:00 p.m. ET, including weekends.");
@@ -53,28 +52,47 @@ public class Util {
     public static Runnable validationFunction(LocalDateTime appointmentDateTime, ObservableList<Appointment> existingAppointments, LocalDateTime newAppointmentStart, LocalDateTime newAppointmentEnd) {
         return () -> {
             validateOverlappingAppointments(existingAppointments, newAppointmentStart, newAppointmentEnd);
-            validateBusinessHours(appointmentDateTime);
+            //validateBusinessHours(appointmentDateTime);
         };
     }
 
-    public static boolean validateOverlapping(int customerId, LocalDateTime start, LocalDateTime end){
+    //for AddAppointment
+    public static boolean validateOverlapping(int customerId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         ObservableList<Appointment> appointments = AppointmentQuery.getAppointments(customerId);
 
-        for(Appointment appointment: appointments) {
+        for (Appointment appointment : appointments) {
             LocalDateTime appointmentStart = appointment.getStart();
             LocalDateTime appointmentEnd = appointment.getEnd();
-            if(appointmentStart.isEqual(start) || appointmentEnd.isEqual(end)) {
-                errorAlert("OVERLAP ERROR", "Start time cannot be the same as End time");
+
+            if (appointmentStart.isEqual(startDateTime) || appointmentEnd.isEqual(endDateTime)) {
+                // Check for exact match of start or end times
+                errorAlert("OVERLAP ERROR", "Start time or End time cannot be the same as existing appointment");
                 return true;
-            } else if(start.isAfter(appointmentStart) && end.isAfter(appointmentEnd)) {
+            } else if (startDateTime.isAfter(appointmentStart) && startDateTime.isBefore(appointmentEnd)) {
+                // Check for overlap in the start time
                 errorAlert("OVERLAP ERROR", "Appointment start overlap not allowed.");
                 return true;
-            } else if (start.isAfter(appointmentStart) && start.isBefore(appointmentEnd)) {
-                errorAlert("OVERLAP ERROR", "Appointment end overlap not allowed");
+            } else if (endDateTime.isAfter(appointmentStart) && endDateTime.isBefore(appointmentEnd)) {
+                // Check for overlap in the end time
+                errorAlert("OVERLAP ERROR", "Appointment end overlap not allowed.");
                 return true;
-            } else if (end.isAfter(appointmentStart) && end.isBefore(appointmentEnd)) {
-                errorAlert("OVERLAP ERROR","Appointment end overlap not allowed" );
-                return true;
+            } else if (customerId != appointment.getCustomerId()) {
+                continue;
+            }
+        }
+        return false;
+    }
+
+
+    //for Update Appointment
+    public static boolean validatingOverlap(int customerId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        ObservableList<Appointment> appointments = AppointmentQuery.getAppointments(customerId);
+        for(Appointment appointment : appointments) {
+            LocalDateTime appointmentStart = appointment.getStart();
+            LocalDateTime appointmentEnd = appointment.getEnd();
+
+            if (!(customerId == appointment.getCustomerId()) && !(startDateTime.isEqual(appointmentStart)) && !(endDateTime.isEqual(appointmentEnd))){
+                validateOverlapping(customerId, startDateTime, endDateTime);
             }
         }
         return false;

@@ -114,6 +114,7 @@ public class Appointment {
         this.contact = contact;
     }
 
+
     public boolean overlaps(LocalDateTime newStart, LocalDateTime newEnd) {
         return start.isBefore(newEnd) && end.isAfter(newStart);
     }
@@ -123,5 +124,13 @@ public class Appointment {
         return ("Appointment: {" + Integer.toString(appointmentId) + "} \nCustomer: {" + Integer.toString(customerId) +
                 " } \nContact: {" + Integer.toString(contact) + "} \n Type: " + type + " \nStart: {"+ start +
                 "} \nEnd: {" + end);
+    }
+
+    public int getTypeTotal() {
+        return typeTotal;
+    }
+
+    public void setTypeTotal(int typeTotal) {
+        this.typeTotal = typeTotal;
     }
 }

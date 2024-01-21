@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 
 public class AppointmentQuery {
 
-    static ObservableList<Appointment> appointments = FXCollections.observableArrayList();
     static LocalDateTime now = LocalDateTime.now();
     static LocalDateTime weekLater = now.plusWeeks(1);
     static LocalDateTime monthLater = now.plusMonths(1);
@@ -90,7 +89,7 @@ public class AppointmentQuery {
     }
 
     public static ObservableList<Appointment> getApptByWeek(){
-        appointments = getAppointmentList();
+        ObservableList<Appointment> weekAppointments = FXCollections.observableArrayList();
         try {
             String query = "SELECT * FROM appointments INNER JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID WHERE Start >=? AND Start <= ?";
             PreparedStatement ps = JDBC.connection.prepareStatement(query);
@@ -110,13 +109,13 @@ public class AppointmentQuery {
                 int userId = rs.getInt("User_ID");
                 int contactId = rs.getInt("Contact_ID");
                 Appointment byWeek = new Appointment(appointmentId, title, description, location, type, start, end, customerId, userId, contactId);
-                appointments.add(byWeek);
+                weekAppointments.add(byWeek);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return appointments;
+        return weekAppointments;
     }
 
     public static void deleteAppointment(int appointmentId){
@@ -131,7 +130,7 @@ public class AppointmentQuery {
     }
 
     public static ObservableList<Appointment> getMonthlyAppointment(){
-        appointments = getAppointmentList();
+        ObservableList<Appointment> monthAppointments = FXCollections.observableArrayList();
         try {
             String sql = "SELECT * FROM appointments INNER JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID WHERE WHERE Start >=? AND Start <=?";
             PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -151,13 +150,13 @@ public class AppointmentQuery {
                 int userId = rs.getInt("User_ID");
                 int contactId = rs.getInt("Contact_ID");
                 Appointment byMonth = new Appointment(appointmentId, title, description, location, type, start, end, customerId, userId, contactId);
-                appointments.add(byMonth);
+                monthAppointments.add(byMonth);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return appointments;
+        return monthAppointments;
     }
 
     public static ObservableList<Appointment> getUserAppointment(int userID){
@@ -241,7 +240,7 @@ public class AppointmentQuery {
         return contactAppointments;
     }
 
-    public static ObservableList<Appointment> AppointmentType(){
+    public static ObservableList<Appointment> getAppointmentType(){
         ObservableList<Appointment> appointmentListType = FXCollections.observableArrayList();
         try {
             String query = "SELECT Type, Count(*) AS NUM FROM appointments GROUP BY Type";
