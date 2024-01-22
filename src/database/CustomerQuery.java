@@ -112,9 +112,8 @@ public class CustomerQuery {
      * @param divisionId The new division ID for the customer.
      */
     public static void updateCustomer(int customerId, String customerName, String address, String postalCode, String phone, int divisionId) {
-        try {
-            String query ="UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ?, WHERE Customer_ID = ?";
-            PreparedStatement preparedStatement = JDBC.connection.prepareStatement(query);
+        String query ="UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ?, WHERE Customer_ID = ?";
+        try (PreparedStatement preparedStatement = JDBC.connection.prepareStatement(query)){
             preparedStatement.setString(1, customerName);
             preparedStatement.setString(2, address);
             preparedStatement.setString(3, postalCode);
@@ -150,7 +149,7 @@ public class CustomerQuery {
         preparedStatement.setString(3, postalCode);
         preparedStatement.setString(4, phone);
         preparedStatement.setInt(5, divisionId);
-        preparedStatement.executeUpdate();
+        preparedStatement.execute();
 
 
     }

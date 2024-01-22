@@ -20,7 +20,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import static database.UserQuery.*;
 import static helper.Util.confirmAlert;
@@ -166,23 +168,27 @@ public class Login implements Initializable {
      * Creates a log entry for the login attempt with username, timestamp, and success status.
      * Appends the log entry to a dedicated file.
      *
+     * <b>Lambda Expression 2</b>
      * @param username The username used for the login attempt.
      * @param timestamp The timestamp of the login attempt.
      * @param success   Indicates whether the login attempt was successful.
      */
     public void loginAttempt(String username, LocalDateTime timestamp, boolean success) {
-        String logEntry;
-        if(success) {
-            logEntry = String.format("Username: %s, Timestamp: %s, Success: %s%n", username, timestamp, true);
-        }
-        else {
-            logEntry = String.format("Username: %s, Timestamp: %s, Success: %s%n", username, timestamp, false);
-        }
+        //Lambda Expression
+        Consumer<String> writeLogEntry = entry -> {
+            try {
+                Files.write(Path.of(LOGIN_ACTIVITY_FILE), entry.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
 
-        try {
-            Files.write(Path.of(LOGIN_ACTIVITY_FILE), logEntry.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
+        String logEntry = String.format("Username: %s, Timestamp: %s, Success: %s%n", username, timestamp, success);
+        writeLogEntry.accept(logEntry);
     }
+
+    /*
+
+
+     */
 }

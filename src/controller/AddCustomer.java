@@ -99,7 +99,7 @@ public class AddCustomer implements Initializable {
                 errorAlert("Customer Postal Code is blank", "The customer postal code field is blank. \nPlease enter a valid postal code" );
                 return;
             }
-            String phone =phoneNumber.getText();
+            String phone = phoneNumber.getText();
             if(phone.isEmpty() || phone.isBlank()) {
                 errorAlert("Error phone number", "Please enter a valid phone number" );
                 return;

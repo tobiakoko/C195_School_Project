@@ -227,7 +227,7 @@ public class UpdateAppointment implements Initializable {
      * @param endTime   The end time of the appointment.
      * @return True if the appointment is within business hours, otherwise false.
      */
-    private static boolean validateBusinessHours(LocalTime startTime, LocalTime endTime) {
+    static boolean validateBusinessHours(LocalTime startTime, LocalTime endTime) {
         // Validate that an appointment is scheduled within business hours
         if (startTime.isBefore(BUSINESS_START_TIME) || endTime.isAfter(BUSINESS_END_TIME)) {
             return true;

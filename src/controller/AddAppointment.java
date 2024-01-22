@@ -1,6 +1,9 @@
 package controller;
 
-import database.*;
+import database.AppointmentQuery;
+import database.ContactQuery;
+import database.CustomerQuery;
+import database.UserQuery;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,10 +25,13 @@ import java.sql.SQLException;
 import java.time.*;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static helper.Util.*;
+import static controller.UpdateAppointment.validateBusinessHours;
+import static helper.Util.errorAlert;
+import static helper.Util.validateOverlapping;
 
 /**
  * This class manages the user interface and logic for adding a new appointment.
@@ -97,7 +103,7 @@ public class AddAppointment implements Initializable {
             return;
         } else {
             //Appointment Time OverLap and Business hours validation needed here
-            if(validateBusinessHours(start_time, end_time)){
+            if(!validateBusinessHours(start_time, end_time)){
                 errorAlert("Out of Bounds Error", "Appointments must be scheduled between 8:00 a.m. and 10:00 p.m. ET, including weekends.");
             } else if(!validateOverlapping(customer_Id, start_date_time, end_date_time)){
                 // Adding the appointment to the database
@@ -198,13 +204,18 @@ public class AddAppointment implements Initializable {
     /**
      * Validates if the appointment is scheduled within business hours.
      *
-     * @param startTime The start time of the appointment.
-     * @param endTime   The end time of the appointment.
-     * @return True if the appointment is within business hours, false otherwise.
+     *<b>Lambda Expression 1</b>
+     *
      */
+    private static BiPredicate<LocalTime, LocalTime> validateBusinessHours =
+            (startTime, endTime) -> startTime.isBefore(BUSINESS_START_TIME) || endTime.isAfter(BUSINESS_END_TIME);
+
+    /*
     private static boolean validateBusinessHours(LocalTime startTime, LocalTime endTime) {
     // Validate that an appointment is scheduled within business hours
         return startTime.isBefore(BUSINESS_START_TIME) || endTime.isAfter(BUSINESS_END_TIME);
     }
+
+     */
 }
 
