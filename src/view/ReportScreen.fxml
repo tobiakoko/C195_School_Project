@@ -11,9 +11,9 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Report">
     <Label alignment="CENTER" layoutX="450.0" layoutY="38.0" prefHeight="25.0" prefWidth="300.0" text="REPORTS TABLE" />
-    <Button fx:id="back" layoutX="941.0" layoutY="538.0" mnemonicParsing="false" onAction="#onBack" text="Back" />
+    <Button layoutX="941.0" layoutY="538.0" mnemonicParsing="false" onAction="#onBack" text="Back" />
     <TabPane layoutX="31.0" layoutY="83.0" prefHeight="400.0" prefWidth="1157.0" tabClosingPolicy="UNAVAILABLE">
-        <Tab fx:id="customerCountTab" text="Customer Appointment Report">
+        <Tab text="Customer Appointment Report">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="353.0" prefWidth="200.0">
                 <TableView fx:id="typeCountTable" layoutX="14.0" layoutY="35.0" prefHeight="301.0" prefWidth="557.0">
                     <columns>
@@ -35,7 +35,7 @@
             </TableView>
             </AnchorPane>
         </Tab>
-        <Tab fx:id="contactScheduleTab" text="Individual Contacts Report">
+        <Tab text="Individual Contacts Report">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                 <TableView fx:id="contactScheduleTable" layoutX="20.0" layoutY="39.0" prefHeight="325.0" prefWidth="1111.0">
                     <columns>

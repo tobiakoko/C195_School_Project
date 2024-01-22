@@ -27,6 +27,13 @@ import java.util.stream.IntStream;
 
 import static helper.Util.*;
 
+/**
+ * This class manages the user interface and logic for adding a new appointment.
+ * It populates drop-down menus with contacts, users, customers, and available times within business hours.
+ * It validates user input and adds appointments to the database upon confirmation.
+ *
+ * @author Daniel Akoko
+ */
 public class AddAppointment implements Initializable {
 
     @FXML private ComboBox<Customer> customerBox;
@@ -45,8 +52,22 @@ public class AddAppointment implements Initializable {
     private static final LocalTime BUSINESS_START_TIME = LocalTime.of(8, 0);
     private static final LocalTime BUSINESS_END_TIME = LocalTime.of(22, 0);
 
-
+    /**
+     * Handles the save action for adding an appointment.
+     * Attempts to save a new appointment based on user input.
+     * Retrieves user-selected values for title, description, location, type, contact, customer, user, start date/time, and end date/time.
+     * Validates if start and end dates and times are present and within business hours.
+     * Checks for overlap with existing appointments for the customer.
+     * If valid, adds the appointment to the database using AppointmentQuery.addAppointment.
+     * Navigates to the AppointmentScreen if successful.
+     * Displays error messages for missing required fields or invalid times/overlaps.
+     *
+     * @param actionEvent The ActionEvent associated with the event.
+     * @throws IOException If an I/O error occurs.
+     * @throws SQLException If a SQL exception occurs.
+     */
     public void onSave(ActionEvent actionEvent) throws IOException, SQLException {
+        // Extracting input data from the form
         String Title = title.getText();
         String Description = description.getText();
         String Type = type.getText();
@@ -61,6 +82,7 @@ public class AddAppointment implements Initializable {
         LocalDateTime start_date_time = LocalDateTime.of(start_date.getYear(), start_date.getMonth(), start_date.getDayOfMonth(), start_time.getHour(), start_time.getMinute());
         LocalDateTime end_date_time = LocalDateTime.of(end_date.getYear(), end_date.getMonth(), end_date.getDayOfMonth(), end_time.getHour(), end_time.getMinute());
 
+        // Validating input fields
         if(start_date == null) {
             errorAlert("Please select a valid start date", "The start date field is blank. Please choose a date");
 
@@ -75,11 +97,13 @@ public class AddAppointment implements Initializable {
             return;
         } else {
             //Appointment Time OverLap and Business hours validation needed here
-            if(!validateBusinessHours(start_time, end_time)){
+            if(validateBusinessHours(start_time, end_time)){
                 errorAlert("Out of Bounds Error", "Appointments must be scheduled between 8:00 a.m. and 10:00 p.m. ET, including weekends.");
             } else if(!validateOverlapping(customer_Id, start_date_time, end_date_time)){
+                // Adding the appointment to the database
                 AppointmentQuery.addAppointment(Title, Description, Location, Type, start_date_time, end_date_time, customer_Id, user_Id, Contact);
 
+                // Redirecting to the main appointment screen
                 Parent parent = FXMLLoader.load(getClass().getResource("../view/AppointmentScreen.fxml"));
                 Scene scene = new Scene(parent);
                 Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -89,7 +113,15 @@ public class AddAppointment implements Initializable {
         }
     }
 
+    /**
+     * Handles the cancellation action for adding an appointment.
+     * Confirms with the user if they want to cancel adding an appointment and return to the AppointmentScreen.
+     *
+     * @param actionEvent The event triggering the cancellation action.
+     * @throws IOException If an I/O error occurs.
+     */
     public void onCancel(ActionEvent actionEvent) throws IOException {
+        // Displaying confirmation dialog for cancellation
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm cancellation");
         alert.setContentText("Are you sure you want to leave this page? Changes will not be saved");
@@ -97,6 +129,7 @@ public class AddAppointment implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
 
         if(result.isPresent() && result.get() == ButtonType.YES) {
+            // Redirecting to the main appointment screen
             Parent parent = FXMLLoader.load(getClass().getResource("../view/AppointmentScreen.fxml"));
             Scene scene = new Scene(parent);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -105,15 +138,29 @@ public class AddAppointment implements Initializable {
         }
     }
 
+    /**
+     * Initializes the controller.
+     * Sets the ID for the appointmentID field (for potential customization).
+     * Populates drop-down menus with lists of contacts, users, and customers obtained from respective queries.
+     * Sets default values for dates and times.
+     * Creates ObservableLists for time and date options based on business hours (8:00 AM - 10:00 PM ET).
+     * Selects the first item in each ComboBox by default.
+     *
+     * @param url The location used to resolve relative paths for the root object.
+     * @param resourceBundle The resources used to localize the root object.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         appointmentID.setId(appointmentID.getId());
         ObservableList<model.Contact> contacts = ContactQuery.getAllContacts();
         ObservableList<User> users = UserQuery.getUserList();
         ObservableList<Customer> customers = CustomerQuery.getCustomerList();
+        /*
         ObservableList<String> populateTime = FXCollections.observableArrayList();
         ObservableList<String> populateDate = FXCollections.observableArrayList();
+        */
 
+        // Populating dropdowns with data
         contact.setItems(contacts);
         contact.getSelectionModel().selectFirst();
         userBox.setItems(users);
@@ -126,28 +173,38 @@ public class AddAppointment implements Initializable {
         startTime.getSelectionModel().selectFirst();
         endTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), LocalTime.of(9, 0), 13));
         endTime.getSelectionModel().selectFirst();
-        //validationFunction(appointmentDateTime,  existingAppointments, newAppointmentStart, newAppointmentEnd);
-
-
     }
 
+    /**
+     * Initializes business hours for a given time zone.
+     *
+     * @param systemZoneId   The system time zone.
+     * @param businessZoneId The business time zone.
+     * @param startHour       The starting hour of the business day.
+     * @param workingHours    The number of working hours in the business day.
+     * @return ObservableList of LocalTime representing business hours.
+     */
     private static  ObservableList<LocalTime> initializeBusinessHours(ZoneId systemZoneId, ZoneId businessZoneId, LocalTime startHour, int workingHours) {
         ZonedDateTime businessStartTime = ZonedDateTime.of(LocalDate.now(), startHour, businessZoneId);
         ZonedDateTime localStartTime = businessStartTime.withZoneSameInstant(systemZoneId);
         int localStartingHour = localStartTime.getHour();
 
-        return IntStream.range(localStartingHour, localStartingHour + workingHours).filter(hour -> hour >= 8 && hour <= 22).mapToObj(i -> LocalTime.of(i / 2, (i % 2) * 30))
+        return IntStream.range(localStartingHour, localStartingHour + workingHours)
+                .filter(hour -> hour >= 8 && hour <= 22)
+                .mapToObj(i -> LocalTime.of(i / 2, (i % 2) * 30))
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
     }
 
+    /**
+     * Validates if the appointment is scheduled within business hours.
+     *
+     * @param startTime The start time of the appointment.
+     * @param endTime   The end time of the appointment.
+     * @return True if the appointment is within business hours, false otherwise.
+     */
     private static boolean validateBusinessHours(LocalTime startTime, LocalTime endTime) {
     // Validate that an appointment is scheduled within business hours
-    if (startTime.isBefore(BUSINESS_START_TIME) || endTime.isAfter(BUSINESS_END_TIME)) {
-        return true;
-    } else {
-        return false;
+        return startTime.isBefore(BUSINESS_START_TIME) || endTime.isAfter(BUSINESS_END_TIME);
     }
-}
-
 }
 

@@ -23,8 +23,18 @@ import java.time.ZoneId;
 import java.util.*;
 
 import static database.UserQuery.*;
+import static helper.Util.confirmAlert;
 import static helper.Util.errorAlert;
 
+/**
+ * Controller class for handling login-related actions.
+ * The Login class manages the user interface and logic for the login screen.
+ * It allows users to enter their username and password,
+ * validates the provided credentials, and handles successful and unsuccessful login attempts.
+ * It also displays login attempts and their results to a log file.
+ *
+ * @author Daniel Akoko
+ */
 public class Login implements Initializable {
     @FXML private TextField usernameTextField;
     @FXML private Button cancelButton;
@@ -37,11 +47,29 @@ public class Login implements Initializable {
     ResourceBundle rb = ResourceBundle.getBundle("language/lang", Locale.getDefault());
     LocalDateTime now = LocalDateTime.now();
 
+    /**
+     * Handles the action when "Cancel" button is clicked.
+     * Closes the login window.
+     *
+     * @param actionEvent The event triggering the action.
+     */
     public void cancelButtonAction(ActionEvent actionEvent) {
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Handles the action when "Login" button is clicked.
+     * Performs login checks and processes:
+     *     Validates username and password fields for emptiness and validity.
+     *     Logs attempts and indicates success or otherwise.
+     *     Displays error messages for invalid or empty fields.
+     *     Navigates to the main screen on successful login and checks for upcoming appointments.
+     *     Shows alerts for successful login with upcoming appointments or no upcoming appointments.
+     *
+     * @param actionEvent The event triggering the action.
+     * @throws Exception If there is an exception.
+     */
     public void loginButtonAction(ActionEvent actionEvent) throws Exception {
         try {
             //accepts username and password
@@ -66,6 +94,7 @@ public class Login implements Initializable {
                 int userID = getUserId(usernameInput);
                 ObservableList<Appointment> appointments = AppointmentQuery.getUserAppointment(userID);
 
+                // Load the main screen upon successful login
                 Parent parent = FXMLLoader.load(getClass().getResource("../view/MainScreen.fxml"));
                 Scene scene = new Scene(parent);
                 Stage stage = (Stage)((Node) actionEvent.getSource()).getScene().getWindow();
@@ -88,7 +117,7 @@ public class Login implements Initializable {
                     }
                 }
                 if (!userValid) {
-                    showNoAppointmentAlert();
+                    confirmAlert(null, rb.getString("NoUpcomingAppointments"));
                 }
             }
 
@@ -97,6 +126,14 @@ public class Login implements Initializable {
         }
     }
 
+    /**
+     * Initializes the controller.
+     * Determines the user's location (zone ID) and displays it on the login form.
+     * Sets UI labels and buttons based on the current language using a resource bundle.
+     *
+     * @param url            The location used to resolve relative paths for the root object.
+     * @param resourceBundle The resources used to localize the root object.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
             //Determine the user's location(i.e Zone ID) and display it in a label on the log-in form
@@ -112,6 +149,11 @@ public class Login implements Initializable {
     }
 
 
+    /**
+     * Displays an alert with information about an upcoming appointment.
+     *
+     * @param appointment The appointment to display in the alert.
+     */
     private void showAppointmentAlert(Appointment appointment) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(null);
@@ -119,13 +161,15 @@ public class Login implements Initializable {
         alert.showAndWait();
     }
 
-    private void showNoAppointmentAlert() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(null);
-        alert.setContentText(rb.getString("NoUpcomingAppointments"));
-        alert.showAndWait();
-    }
-
+    /**
+     * Records a login attempt.
+     * Creates a log entry for the login attempt with username, timestamp, and success status.
+     * Appends the log entry to a dedicated file.
+     *
+     * @param username The username used for the login attempt.
+     * @param timestamp The timestamp of the login attempt.
+     * @param success   Indicates whether the login attempt was successful.
+     */
     public void loginAttempt(String username, LocalDateTime timestamp, boolean success) {
         String logEntry;
         if(success) {

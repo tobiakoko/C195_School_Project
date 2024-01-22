@@ -38,9 +38,9 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Button fx:id="addAppointment" mnemonicParsing="false" onAction="#onAddAppointment" prefHeight="25.0" prefWidth="150.0" text="Add Appointment" />
-                <Button fx:id="deleteAppointment" mnemonicParsing="false" onAction="#onDeleteAppointment" prefHeight="25.0" prefWidth="152.0" text="Delete Appointment" GridPane.columnIndex="2" />
-                <Button fx:id="updateAppointment" mnemonicParsing="false" onAction="#onUpdateAppointment" prefHeight="25.0" prefWidth="150.0" text="Update Appointment" GridPane.columnIndex="1" />
+                <Button mnemonicParsing="false" onAction="#onAddAppointment" prefHeight="25.0" prefWidth="150.0" text="Add Appointment" />
+                <Button mnemonicParsing="false" onAction="#onDeleteAppointment" prefHeight="25.0" prefWidth="152.0" text="Delete Appointment" GridPane.columnIndex="2" />
+                <Button mnemonicParsing="false" onAction="#onUpdateAppointment" prefHeight="25.0" prefWidth="150.0" text="Update Appointment" GridPane.columnIndex="1" />
             </children>
         </GridPane>
         <Button layoutX="947.0" layoutY="539.0" mnemonicParsing="false" onAction="#back" text="Back" />

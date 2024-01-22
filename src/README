@@ -1,35 +1,17 @@
-Create a README.txt file that includes the following information:
-•  title and purpose of the application
-•  author, contact information, student application version, and date
+Title: GUI-Based Scheduling Desktop Application
+Purpose: The Scheduling Desktop Application is a GUI-based application designed to streamline scheduling tasks
+         for a global consulting organization. It enables users to create, manage, and view customer records
+         and appointments, ensuring efficient scheduling practices and enhanced organizational productivity.
+
 Author: Daniel Akoko
 Contact Information: dakoko@wgu.edu
-Student Application Version:
-Date: November 13th 2023
-•  IDE including version number (e.g., IntelliJ Community 2020.01), full JDK of version used
-(e.g., Java SE 17.0.1), and JavaFX version compatible with JDK version (e.g. JavaFX-SDK-17.0.1)
-IDE: IntelliJ Community 2020.01, Java SE 17.0.1,
-•  directions for how to run the program
-•  a description of the additional report of your choice you ran in part A3f
-•  the MySQL Connector driver version number, including the update number (e.g., mysql-connector-java-8.1.23)
-
-README.txt - BARD
-Title and Purpose of the Application
-
-The Scheduling Desktop Application is a GUI-based application designed to streamline scheduling tasks
-for a global consulting organization. It enables users to create, manage, and view customer records
-and appointments, ensuring efficient scheduling practices and enhanced organizational productivity.
-
-Author, Contact Information, and Version
-
-Developed by Daniel Akoko, [dakoko@wgu.edu]
 Student Application Version: 1.0
-Date: November 13, 2023
+Date: January 20th 2024
 
 IDE, JDK, and JavaFX Versions
-
-    IntelliJ Community 2023.2
-    Full JDK of version used: Java SE 18.0.2
-    JavaFX version compatible with JDK version: JavaFX-SDK-18.0.2
+       IDE: IntelliJ IDEA 2023.01
+       Java Development Kit (JDK): Java SE 17.0.1
+       JavaFX Version: JavaFX-SDK-17.0.1
 
 Directions for Running the Program
     Install the required software:
@@ -43,31 +25,6 @@ Directions for Running the Program
     Connect to the MySQL database.
     Run the application.
 
-Description of the Additional Report
-The additional report provides a detailed overview of customer appointments by country,
-including the number of appointments, average appointment duration, and most frequent
-appointment types for each country. This report offers valuable insights into customer preferences and
-scheduling trends across different regions.
-
-MySQL Connector Driver Version
-mysql-connector-java-8.0.30
-
-
-
-README.txt CGPT
-Title: GUI-Based Scheduling Desktop Application
-Purpose: This application is designed to meet the business requirements of a global consulting organization
-for managing customer records, appointments, and generating various reports.
-
-Author: Daniel Akoko
-Contact Information: dakoko@wgu.edu
-Student Application Version: 1.0
-Date: November 13, 2023
-
-IDE: IntelliJ IDEA 2023.01
-Java Development Kit (JDK): Java SE 17.0.1
-JavaFX Version: JavaFX-SDK-17.0.1
-
 Directions for Running the Program:
 1. Open the project in IntelliJ IDEA.
 2. Configure the JavaFX SDK as a library.
@@ -77,6 +34,17 @@ Directions for Running the Program:
 
 Description of Additional Report (Part A3f):
 This report is a custom addition to the two required reports and the user log-in date and time stamp.
-It provides valuable information about [Brief description of your custom report here].
+It provides valuable information about //
+
+***************************************************
+Description of the Additional Report
+The additional report provides a detailed overview of customer appointments by country,
+including the number of appointments, average appointment duration, and most frequent
+appointment types for each country. This report offers valuable insights into customer preferences and
+scheduling trends across different regions.
+
+MySQL Connector Driver Version
+mysql-connector-java-8.0.30
+
 
 MySQL Connector Driver Version: mysql-connector-java-8.1.23

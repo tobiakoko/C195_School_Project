@@ -24,6 +24,14 @@ import java.util.ResourceBundle;
 
 import static helper.Util.confirmAlert;
 
+/**
+ * Controller class for handling appointments.
+ * The Appointment class manages the user interface and logic for displaying and manipulating appointments.
+ * It allows users to filter appointments by all, weekly, and monthly views, add new appointments,
+ * delete existing appointments, and update selected appointments.
+ *
+ * @author Daniel Akoko
+ */
 public class Appointment implements Initializable {
     @FXML private RadioButton allAppointment;
     @FXML private ToggleGroup appointment;
@@ -40,29 +48,53 @@ public class Appointment implements Initializable {
     @FXML private TableColumn<model.Appointment, Timestamp> end;
     @FXML private TableColumn<model.Appointment, Integer> customerID;
     @FXML private TableColumn<model.Appointment, Integer> userID;
-    @FXML private Button addAppointment;
-    @FXML private Button deleteAppointment;
-    @FXML private Button updateAppointment;
 
     ObservableList<model.Appointment> AppointmentList = FXCollections.observableArrayList();
 
+    /**
+     * Handles the action when "All Appointments" is selected.
+     * Sets the appointmentTable data to display all appointments from the AppointmentQuery.getAppointmentList method.
+     *
+     * @param actionEvent The event triggering the action.
+     */
     @FXML void onAllAppointment(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentQuery.getAppointmentList());
         appointmentTable.refresh();
     }
 
+    /**
+     * Handles the action when "Monthly Appointments" is selected.
+     * Sets the appointmentTable data to display appointments within the next month from the AppointmentQuery.getMonthlyAppointment method.
+     * Sets a placeholder message displaying "No appointments exist within the next month" if no appointments are found.
+     *
+     * @param actionEvent The event triggering the action.
+     */
     @FXML void onMonthlyAppointment(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentQuery.getMonthlyAppointment());
         appointmentTable.setPlaceholder(new Label("No appointments exist within the next month"));
         appointmentTable.refresh();
     }
 
+    /**
+     * Handles the action when "Weekly Appointments" is selected.
+     * Sets the appointmentTable data to display appointments within the next week from the AppointmentQuery.getApptByWeek method.
+     * Sets a placeholder message displaying "No appointments exist within the next week" if no appointments are found.
+     *
+     * @param actionEvent The event triggering the action.
+     */
     @FXML void onWeeklyAppointment(ActionEvent actionEvent) {
         appointmentTable.setItems(AppointmentQuery.getApptByWeek());
         appointmentTable.setPlaceholder(new Label("No appointments exist within the next week"));
         appointmentTable.refresh();
     }
 
+    /**
+     * Handles the action when "Add Appointment" button is clicked.
+     * Opens the AddAppointment.fxml view to create a new appointment.
+     *
+     * @param actionEvent The event triggering the action.
+     * @throws IOException
+     */
     @FXML void onAddAppointment(ActionEvent actionEvent) throws IOException {
         Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../view/AddAppointment.fxml")));
         Scene scene = new Scene(parent);
@@ -71,6 +103,15 @@ public class Appointment implements Initializable {
         stage.show();
     }
 
+    /**
+     * Handles the action when "Delete Appointment" button is clicked.
+     * Checks if an appointment is selected in the table.
+     * Displays confirmation alerts for deletion and confirms user intent.
+     * Uses AppointmentQuery.deleteAppointment to remove the selected appointment from the database.
+     * Refreshes the table with updated data.
+     *
+     * @param actionEvent The event triggering the action.
+     */
     @FXML void onDeleteAppointment(ActionEvent actionEvent) {
         model.Appointment selectedAppointment = appointmentTable.getSelectionModel().getSelectedItem();
         if (selectedAppointment == null) {
@@ -93,6 +134,7 @@ public class Appointment implements Initializable {
             confirm.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
             confirm.showAndWait();
 
+            // Deleting the appointment from the database
             AppointmentQuery.deleteAppointment(selectedAppointment.getAppointmentId());
             AppointmentList = AppointmentQuery.getAppointmentList();
             appointmentTable.setItems(AppointmentList);
@@ -102,7 +144,17 @@ public class Appointment implements Initializable {
         }
     }
 
-
+    /**
+     * Handles the action when "Update Appointment" button is clicked.
+     * Tries to load the UpdateAppointment.fxml view.
+     * Retrieves the selected appointment from the table.
+     * Passes the selected appointment to the UpdateAppointment controller via modifyAppointment method.
+     * Opens the UpdateAppointment.fxml view with the selected appointment details.
+     * Catches exceptions for missing selection or database errors.
+     *
+     * @param actionEvent The event triggering the action.
+     * @throws IOException If there is an error loading the scene.
+     */
     @FXML void onUpdateAppointment(ActionEvent actionEvent) throws IOException {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/UpdateAppointment.fxml"));
@@ -121,17 +173,36 @@ public class Appointment implements Initializable {
         }
     }
 
+    /**
+     * Handles the action when "Back" button is clicked.
+     * Calls the loadScene method to navigate back to the MainScreen.fxml view.
+     *
+     * @param actionEvent The event triggering the action.
+     * @throws IOException If there is an error loading the scene.
+     */
     @FXML void back(ActionEvent actionEvent) throws IOException {
         loadScene("../view/MainScreen.fxml", actionEvent);
     }
 
+    /**
+     * Initializes the controller.
+     * Configures the radio buttons within the appointment toggle group.
+     * Sets the initial data for the appointment table using AppointmentQuery.getAppointmentList.
+     * Initializes cell value factories for each table column using property value factories.
+     *
+     * @param url The location used to resolve relative paths for the root object.
+     * @param resourceBundle The resources used to localize the root object.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Setting up toggle group for radio buttons
         this.allAppointment.setToggleGroup(appointment);
         this.weeklyAppointment.setToggleGroup(appointment);
         this.monthlyAppointment.setToggleGroup(appointment);
 
+        // Populating the appointment table with data
         appointmentTable.setItems(AppointmentQuery.getAppointmentList());
+        // Setting up cell value factories for table columns
         appointmentID.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
         title.setCellValueFactory(new PropertyValueFactory<>("title"));
         description.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -144,12 +215,12 @@ public class Appointment implements Initializable {
         userID.setCellValueFactory(new PropertyValueFactory<>("userId"));
     }
 
-
     /**
      * Load a new scene with the given FXML file path.
+     * Sets the new scene on the current stage.
      *
      * @param fxmlPath    The FXML file path.
-     * @param actionEvent The ActionEvent associated with the event.
+     * @param actionEvent The event triggering the action.
      * @throws IOException If there is an error loading the scene.
      */
     private void loadScene(String fxmlPath, ActionEvent actionEvent) throws IOException {
