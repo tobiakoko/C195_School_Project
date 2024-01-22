@@ -108,7 +108,7 @@ public class AddAppointment implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         appointmentID.setId(appointmentID.getId());
-        ObservableList<Contact> contacts = ContactQuery.getAllContacts();
+        ObservableList<model.Contact> contacts = ContactQuery.getAllContacts();
         ObservableList<User> users = UserQuery.getUserList();
         ObservableList<Customer> customers = CustomerQuery.getCustomerList();
         ObservableList<String> populateTime = FXCollections.observableArrayList();

@@ -15,18 +15,14 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.Country;
-import model.Division;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static helper.Util.errorAlert;
-import static java.time.LocalDateTime.now;
 
 public class AddCustomer implements Initializable {
     @FXML private TextField customerID;
@@ -38,13 +34,10 @@ public class AddCustomer implements Initializable {
     @FXML private ComboBox<model.Country> Country;
 
     public void onCountry(ActionEvent actionEvent) throws SQLException {
-        //int county_Id = Country.getValue().getCountryId();
-        //Division.setItems(DivisionQuery.displayDivision(county_Id));
-        //Division.getSelectionModel().selectFirst();
 
         model.Country country = Country.getValue();
         try{
-            Division.setItems(DivisionQuery.displayDivision(country.getCountryId()));
+            Division.setItems(DivisionQuery.showDivision(country.getCountryId()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

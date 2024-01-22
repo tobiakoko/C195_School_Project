@@ -3,17 +3,23 @@ package helper;
 import database.AppointmentQuery;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import model.Appointment;
 
-import java.time.*;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
+/**
+ * Utility class providing various helper methods.
+ */
 public class Util {
-    private static final int BUSINESS_START_HOUR = 8;
-    private static final int BUSINESS_END_HOUR = 22;
 
+    /**
+     * Displays an error alert with the specified title and content.
+     *
+     * @param title   The title of the error alert.
+     * @param content The content text of the error alert.
+     */
     public static void errorAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -21,42 +27,28 @@ public class Util {
         alert.showAndWait();
     }
 
+    /**
+     * Displays a confirmation alert with the specified title and content.
+     *
+     * @param title   The title of the confirmation alert.
+     * @param content The content text of the confirmation alert.
+     */
     public static void confirmAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setContentText(content);
     }
 
-
-    private static void validateBusinessHours(LocalTime startTime, LocalTime endTime) {
-        // Validate that an appointment is scheduled within business hours
-        int appointmentHour = startTime.getHour();
-        if (appointmentHour < BUSINESS_START_HOUR || appointmentHour >= BUSINESS_END_HOUR) {
-            //Error Statement
-            errorAlert("Out of Bounds Error", "Appointments must be scheduled between 8:00 a.m. and 10:00 p.m. ET, including weekends.");
-        } else {
-            String a = null;
-        }
-    }
-
-    private static void validateOverlappingAppointments(ObservableList<Appointment> existingAppointments, LocalDateTime newAppointmentStart, LocalDateTime newAppointmentEnd) {
-        // Validate that a new appointment doesn't overlap with existing appointments
-        for (Appointment existingAppointment : existingAppointments) {
-            if (existingAppointment.overlaps(newAppointmentStart, newAppointmentEnd)) {
-                errorAlert("Overlap in appointment time detected.", "Overlapping appointments are not allowed.");
-            }
-        }
-    }
-
-    // Lambda expression 1
-    public static Runnable validationFunction(LocalDateTime appointmentDateTime, ObservableList<Appointment> existingAppointments, LocalDateTime newAppointmentStart, LocalDateTime newAppointmentEnd) {
-        return () -> {
-            validateOverlappingAppointments(existingAppointments, newAppointmentStart, newAppointmentEnd);
-            //validateBusinessHours(appointmentDateTime);
-        };
-    }
-
     //for AddAppointment
+    /**
+     * Validates overlapping appointments for the specified customer and time range.
+     * Validation for addAppointment Controller class
+     *
+     * @param customerId    The ID of the customer.
+     * @param startDateTime The start date and time of the appointment.
+     * @param endDateTime   The end date and time of the appointment.
+     * @return True if there is an overlap, false otherwise.
+     */
     public static boolean validateOverlapping(int customerId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         ObservableList<Appointment> appointments = AppointmentQuery.getAppointments(customerId);
 
@@ -85,6 +77,15 @@ public class Util {
 
 
     //for Update Appointment
+    /**
+     * Validates overlapping appointments during an update for the specified customer and time range.
+     * Validation for the updateAppointment Controller class
+     *
+     * @param customerId    The ID of the customer.
+     * @param startDateTime The start date and time of the appointment.
+     * @param endDateTime   The end date and time of the appointment.
+     * @return True if there is an overlap, false otherwise.
+     */
     public static boolean validatingOverlap(int customerId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         ObservableList<Appointment> appointments = AppointmentQuery.getAppointments(customerId);
         for(Appointment appointment : appointments) {
@@ -98,8 +99,13 @@ public class Util {
         return false;
     }
 
-    public ZonedDateTime convertToSystemTimeZone(LocalDateTime time){
+    /**
+     * Converts the given LocalDateTime to the system time zone.
+     *
+     * @param time The LocalDateTime to be converted.
+     */
+    public void convertToSystemTimeZone(LocalDateTime time){
         ZoneId systemZone = ZoneId.systemDefault();
-        return ZonedDateTime.of(time, systemZone);
+        ZonedDateTime.of(time, systemZone);
     }
 }

@@ -9,20 +9,36 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ *
+ *
+ * @author Daniel Akoko
+ */
 public class UserQuery {
 
+    /**
+     * Retrieves all users from the "Users" table.
+     * Uses a prepared statement with a simple SELECT query to fetch data.
+     * Creates User objects based on the retrieved user ID and name.
+     * Catches and prints any SQL exceptions.
+     *
+     * @return ObservableList of User objects containing all users.
+     */
     public static ObservableList<User> getUserList() {
         ObservableList<User> userList = FXCollections.observableArrayList();
         try {
-            PreparedStatement ps = JDBC.connection.prepareStatement("SELECT * FROM Users ");
-            ResultSet rs = ps.executeQuery();
+            // Selecting all users from the database
+            PreparedStatement preparedStatement = JDBC.connection.prepareStatement("SELECT * FROM Users ");
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (rs.next()) {
-                int userId = rs.getInt("User_ID");
-                String userName = rs.getString("User_Name");
+            while (resultSet.next()) {
+                // Extracting user details from the result set
+                int userId = resultSet.getInt("User_ID");
+                String username = resultSet.getString("User_Name");
 
-                User u = new User(userId, userName);
-                userList.add(u);
+                // Creating User object and adding it to the list
+                User user = new User(userId, username);
+                userList.add(user);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -30,14 +46,27 @@ public class UserQuery {
         return userList;
     }
 
-    public static boolean validateUser(String user_Name, String Password) {
+    /**
+     * Attempts to validate a user login by checking username and password.
+     * Uses a prepared statement with a SELECT query that filters by username and password.
+     * Checks if any result is found in the result set.
+     * Catches and prints any SQL exceptions.
+     *
+     * @param username The username to validate.
+     * @param password The password to validate.
+     * @return True if the username and password combination match, false otherwise.
+     */
+    public static boolean validateUser(String username, String password) {
          try {
-            String sql = "SELECT * FROM Users WHERE User_Name = ? AND Password = ?";
-            PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-             ps.setString(1, user_Name);
-             ps.setString(2, Password);
-             ResultSet rs = ps.executeQuery();
-             if(rs.next()) {
+             // Selecting user based on username and password
+            String query = "SELECT * FROM Users WHERE User_Name = ? AND Password = ?";
+            PreparedStatement preparedStatement = JDBC.connection.prepareStatement(query);
+             preparedStatement.setString(1, username);
+             preparedStatement.setString(2, password);
+             ResultSet resultSet = preparedStatement.executeQuery();
+
+             // Checking if a matching user is found
+             if(resultSet.next()) {
                  return true;
              }
         } catch (SQLException e) {
@@ -46,12 +75,22 @@ public class UserQuery {
          return false;
     }
 
-    public static boolean validUsername(String User_Name) {
-        try(PreparedStatement ps = JDBC.connection.prepareStatement("SELECT * FROM Users WHERE BINARY User_Name = ?")) {
-            ps.setString(1, User_Name);
-            ResultSet rs = ps.executeQuery();
+    /**
+     * Checks if a provided username already exists in the "Users" table.
+     * Uses a prepared statement with a SELECT query that filters by username (case-sensitive).
+     * Checks if any result is found in the result set.
+     * Catches and prints any SQL exceptions.
+     *
+     * @param username The username to check.
+     * @return True if the username already exists, false otherwise.
+     */
+    public static boolean validUsername(String username) {
+        try(PreparedStatement preparedStatement = JDBC.connection.prepareStatement("SELECT * FROM Users WHERE BINARY User_Name = ?")) {
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (rs.next()) {
+            // Checking if a matching username is found
+            if (resultSet.next()) {
                 return true;
             }
         } catch (SQLException e) {
@@ -60,12 +99,22 @@ public class UserQuery {
         return false;
     }
 
-    public static boolean validPassword(String Password) {
-        try(PreparedStatement ps = JDBC.connection.prepareStatement("SELECT * FROM Users WHERE BINARY Password = ?")) {
-            ps.setString(1, Password);
-            ResultSet rs = ps.executeQuery();
+    /**
+     * Checks if a provided password exists in the "Users" table.
+     * Uses a prepared statement with a SELECT query that filters by password (case-sensitive).
+     * Checks if any result is found in the result set.
+     * Catches and prints any SQL exceptions.
+     *
+     * @param password The password to check.
+     * @return True if the password already exists, false otherwise.
+     */
+    public static boolean validPassword(String password) {
+        try(PreparedStatement preparedStatement = JDBC.connection.prepareStatement("SELECT * FROM Users WHERE BINARY Password = ?")) {
+            preparedStatement.setString(1, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (rs.next()) {
+            // Checking if a matching password is found
+            if (resultSet.next()) {
                 return true;
             }
         } catch (SQLException e) {
@@ -74,32 +123,56 @@ public class UserQuery {
         return false;
     }
 
-    public static int getUserId(String userName) throws SQLException {
+    /**
+     * Retrieves the user ID associated with a specific username.
+     * Uses a prepared statement with a SELECT query that filters by username.
+     * Expects only one result and retrieves the user ID from the result set.
+     * Catches and throws any SQL exceptions.
+     *
+     * @param username The username for which to retrieve the ID.
+     * @return The user ID associated with the provided username as an integer.
+     * @throws SQLException If a SQL exception occurs during the database interaction.
+     */
+    public static int getUserId(String username) throws SQLException {
         int userId = 0;
-        PreparedStatement ps = JDBC.connection.prepareStatement("SELECT User_ID, User_Name FROM Users WHERE User_Name = '" + userName + "'");
-        ResultSet rs = ps.executeQuery();
+        // Selecting user ID based on username
+        PreparedStatement preparedStatement = JDBC.connection.prepareStatement("SELECT User_ID, User_Name FROM Users WHERE User_Name = '" + username + "'");
+        ResultSet resultSet = preparedStatement.executeQuery();
 
-        while (rs.next()) {
-            userId = rs.getInt("User_ID");
-            userName = rs.getString("User_Name");
+        while (resultSet.next()) {
+            // Extracting user ID from the result set
+            userId = resultSet.getInt("User_ID");
+            username = resultSet.getString("User_Name");
             }
         return userId;
     }
 
+    /**
+     * Retrieves user information based on their ID.
+     * Uses a prepared statement with a SELECT query that filters by user ID.
+     * Creates a User object based on the retrieved user ID and name.
+     * Catches and throws any SQL exceptions.
+     *
+     * @param userId The ID of the user to retrieve.
+     * @return User object if found, or throws a RuntimeException if not.
+     */
     public static User returnUserId(int userId) {
         try {
-            String sql = "SELECT User_ID, User_Name FROM users WHERE User_ID = ?";
-            PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-            ps.setInt(1, userId);
-            ps.execute();
+            // Selecting user based on user ID
+            String query = "SELECT User_ID, User_Name FROM users WHERE User_ID = ?";
+            PreparedStatement preparedStatement = JDBC.connection.prepareStatement(query);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.execute();
 
-            ResultSet rs = ps.getResultSet();
+            ResultSet resultSet = preparedStatement.getResultSet();
 
-            rs.next();
-            int user_ID = rs.getInt("User_ID");
-            String userName = rs.getString("User_Name");
-            User u = new User(user_ID, userName);
-            return u;
+            resultSet.next();
+            // Extracting user details from the result set
+            int user_ID = resultSet.getInt("User_ID");
+            String username = resultSet.getString("User_Name");
+
+            // Creating and returning User object
+            return new User(user_ID, username);
         } catch (SQLException e){
             throw new RuntimeException(e);
         }

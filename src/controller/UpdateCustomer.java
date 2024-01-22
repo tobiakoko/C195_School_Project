@@ -3,8 +3,6 @@ package controller;
 import database.CountryQuery;
 import database.CustomerQuery;
 import database.DivisionQuery;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,16 +12,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import model.Country;
 import model.Customer;
-import model.Division;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -51,7 +45,7 @@ public class UpdateCustomer implements Initializable {
         model.Country c = CountryQuery.returnCountry(customer.getCustomerId());
         Country.setValue(c);
         model.Country C = Country.getValue();
-        Division.setItems(DivisionQuery.displayDivision(C.getCountryId()));
+        Division.setItems(DivisionQuery.showDivision(C.getCountryId()));
     }
 
     public void onSave(ActionEvent actionEvent) {
@@ -118,7 +112,7 @@ public class UpdateCustomer implements Initializable {
         //    throw new RuntimeException(e);
        // }
         int county_Id = Country.getValue().getCountryId();
-        Division.setItems(DivisionQuery.displayDivision(county_Id));
+        Division.setItems(DivisionQuery.showDivision(county_Id));
         Division.getSelectionModel().selectFirst();
     }
 
