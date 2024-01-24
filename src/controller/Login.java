@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -47,7 +48,7 @@ public class Login implements Initializable {
 
     //Language bundle to automatically translate error control message into English or French based on the user's computer language setting
     ResourceBundle rb = ResourceBundle.getBundle("language/lang", Locale.getDefault());
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
 
     /**
      * Handles the action when "Cancel" button is clicked.
@@ -108,12 +109,13 @@ public class Login implements Initializable {
                 //Check for appointments upon successful login
                 boolean userValid = false;
                 for (Appointment appointment : appointments) {
+                    ZoneId zone = ZoneId.systemDefault();
+                    ZonedDateTime zonedDateTime = now.atZone(zone);
 
-                    LocalDateTime startTime = appointment.getStart();
                     LocalDateTime upcomingAppt = now.plusMinutes(15);
+                    ZonedDateTime dateTime = ZonedDateTime.from(appointment.getStart().atZone(zone));
 
-                    if((startTime.isAfter(now) || startTime.isEqual(upcomingAppt)) &&
-                        startTime.isBefore(upcomingAppt) || startTime.isEqual(now)){
+                    if(dateTime.isAfter(zonedDateTime) && dateTime.isBefore(upcomingAppt.atZone(zone))){
                         showAppointmentAlert(appointment);
                         userValid = true;
                     }
@@ -150,7 +152,6 @@ public class Login implements Initializable {
             cancelButton.setText(rb.getString("Cancel"));
     }
 
-
     /**
      * Displays an alert with information about an upcoming appointment.
      *
@@ -167,7 +168,6 @@ public class Login implements Initializable {
      * Records a login attempt.
      * Creates a log entry for the login attempt with username, timestamp, and success status.
      * Appends the log entry to a dedicated file.
-     *
      * <b>Lambda Expression 2</b>
      * @param username The username used for the login attempt.
      * @param timestamp The timestamp of the login attempt.
@@ -186,9 +186,4 @@ public class Login implements Initializable {
         String logEntry = String.format("Username: %s, Timestamp: %s, Success: %s%n", username, timestamp, success);
         writeLogEntry.accept(logEntry);
     }
-
-    /*
-
-
-     */
 }

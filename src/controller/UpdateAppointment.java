@@ -93,33 +93,22 @@ public class UpdateAppointment implements Initializable {
             errorAlert("BLANK LOCATION", "The location field is blank. Input location");
         } else {
             // Validate date and time fields
-            if(start_date == null) {
-                errorAlert("Please select a valid start date", "The start date field is blank. Please choose a date");
+            if(start_date == null || start_time == null || end_date == null || end_time == null) {
+                errorAlert("Missing Fields", "Please fill in all date and time fields.");
+            }
+            //Appointment Time OverLap and Business hours validation needed here
+            if(!validateBusinessHours(start_time, end_time)){
+                errorAlert("Out of Bounds Error", "Appointments must be scheduled between 8:00 a.m. and 10:00 p.m. ET, including weekends.");
+            } else if(!validatingOverlap(customerID, start_date_time, end_date_time)){
+                // Modify the appointment details in the database
+                AppointmentQuery.modifyAppointment(appointment_Id, title, description, location, type, start_date_time, end_date_time, customerID, userID, contactID);
 
-            }else if(start_time == null) {
-                errorAlert("Please select a valid start time", "The start time field is blank. Please choose a start time");
-                return;
-            }else if(end_date == null) {
-                errorAlert("Please select a valid end date", "The end date field is blank. Please choose a date");
-                return;
-            }else if(end_time == null) {
-                errorAlert("Please select a valid end time", "The end time field is blank. Please choose a time");
-                return;
-            } else {
-                //Appointment Time OverLap and Business hours validation needed here
-                if(!validateBusinessHours(start_time, end_time)){
-                    errorAlert("Out of Bounds Error", "Appointments must be scheduled between 8:00 a.m. and 10:00 p.m. ET, including weekends.");
-                } else if(!validatingOverlap(customerID, start_date_time, end_date_time)){
-                    // Modify the appointment details in the database
-                    AppointmentQuery.modifyAppointment(appointment_Id, title, description, location, type, start_date_time, end_date_time, customerID, userID, contactID);
-
-                    // Return to the Appointment Screen
-                    Parent parent = FXMLLoader.load(getClass().getResource("../view/AppointmentScreen.fxml"));
-                    Scene scene = new Scene(parent);
-                    Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                    stage.setScene(scene);
-                    stage.show();
-                }
+                // Return to the Appointment Screen
+                Parent parent = FXMLLoader.load(getClass().getResource("../view/AppointmentScreen.fxml"));
+                Scene scene = new Scene(parent);
+                Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                stage.setScene(scene);
+                stage.show();
             }
         }
     }
@@ -162,13 +151,17 @@ public class UpdateAppointment implements Initializable {
         ObservableList<Contact> contacts = ContactQuery.getAllContacts();
         Contact.setItems(contacts);
 
-
         ObservableList<Customer> customers = CustomerQuery.getCustomerList();
         customerId.setItems(customers);
 
         ObservableList<User> users = UserQuery.getUserList();
         userId.setItems(users);
 
+        // Initialize start and end time combo boxes
+        startTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), BUSINESS_START_TIME, BUSINESS_END_TIME));
+        startTime.getSelectionModel().selectFirst();
+        endTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), BUSINESS_START_TIME, BUSINESS_END_TIME));
+        endTime.getSelectionModel().selectFirst();
     }
 
     /**
@@ -185,11 +178,26 @@ public class UpdateAppointment implements Initializable {
         Description.setText(appointment.getDescription());
         Location.setText(appointment.getLocation());
         Type.setText(appointment.getType());
+        // Set start date and time
         startDate.setValue(appointment.getStart().toLocalDate());
-        startTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), LocalTime.of(8, 0), 14));
+        ObservableList<LocalTime> startTimes = initializeBusinessHours(
+                ZoneId.systemDefault(),
+                ZoneId.of("America/New_York"),
+                BUSINESS_START_TIME,
+                BUSINESS_END_TIME
+        );
+        startTime.setItems(startTimes);
         startTime.setValue(appointment.getStart().toLocalTime());
+
+        // Set end date and time
         endDate.setValue(appointment.getEnd().toLocalDate());
-        endTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), LocalTime.of(9, 0), 13));
+        ObservableList<LocalTime> endTimes = initializeBusinessHours(
+                ZoneId.systemDefault(),
+                ZoneId.of("America/New_York"),
+                BUSINESS_START_TIME,
+                BUSINESS_END_TIME
+        );
+        endTime.setItems(endTimes);
         endTime.setValue(appointment.getEnd().toLocalTime());
 
         Contact contact = ContactQuery.returnContactList(appointment.getContact());
@@ -208,15 +216,21 @@ public class UpdateAppointment implements Initializable {
      * @param systemZoneId   The system time zone.
      * @param businessZoneId The business time zone.
      * @param startHour      The starting hour of business hours.
-     * @param workingHours   The number of working hours.
+     * @param endHour   TThe ending hour of business hour.
      * @return The list of LocalTime within business hours.
      */
-    private static  ObservableList<LocalTime> initializeBusinessHours(ZoneId systemZoneId, ZoneId businessZoneId, LocalTime startHour, int workingHours) {
+    private static  ObservableList<LocalTime> initializeBusinessHours(ZoneId systemZoneId, ZoneId businessZoneId, LocalTime startHour, LocalTime endHour) {
         ZonedDateTime businessStartTime = ZonedDateTime.of(LocalDate.now(), startHour, businessZoneId);
         ZonedDateTime localStartTime = businessStartTime.withZoneSameInstant(systemZoneId);
         int localStartingHour = localStartTime.getHour();
 
-        return IntStream.range(localStartingHour, localStartingHour + workingHours).filter(hour -> hour >= 8 && hour <= 22).mapToObj(i -> LocalTime.of(i / 2, (i % 2) * 30))
+        ZonedDateTime businessEndTime = ZonedDateTime.of(LocalDate.now(), endHour, businessZoneId);
+        ZonedDateTime localEndTime = businessEndTime.withZoneSameInstant(systemZoneId);
+        int localEndingHour = localEndTime.getHour();
+
+        return IntStream.range(localStartingHour, localEndingHour)
+                .filter(hour -> hour >= BUSINESS_START_TIME.getHour() && hour <= BUSINESS_END_TIME.getHour())
+                .mapToObj(i -> LocalTime.of(i / 2, (i % 2) * 30))
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
     }
 

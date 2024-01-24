@@ -37,6 +37,7 @@ public class Util {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setContentText(content);
+        alert.showAndWait();
     }
 
     //for AddAppointment

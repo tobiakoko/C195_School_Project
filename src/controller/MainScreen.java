@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+
 /**
  * Controller class for the Main Screen, handling various button actions.
  * The MainScreen class manages the user interface and interaction for the main screen of the application.
@@ -18,7 +19,7 @@ import java.io.IOException;
  *
  * @author Daniel Akoko
  */
-public class MainScreen {
+public class MainScreen{
 
     /**
      * Event handler for the "Customer" button click.

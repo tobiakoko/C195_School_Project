@@ -29,7 +29,6 @@ import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static controller.UpdateAppointment.validateBusinessHours;
 import static helper.Util.errorAlert;
 import static helper.Util.validateOverlapping;
 
@@ -95,7 +94,8 @@ public class AddAppointment implements Initializable {
         LocalDateTime end_date_time = LocalDateTime.of(end_date.getYear(), end_date.getMonth(), end_date.getDayOfMonth(), end_time.getHour(), end_time.getMinute());
 
         //Appointment Time OverLap and Business hours validation needed here
-        if(!validateBusinessHours(start_time, end_time)){
+        boolean isValid = validateBusinessHours.test(start_time, end_time);
+        if(!isValid){
             errorAlert("Out of Bounds Error", "Appointments must be scheduled between 8:00 a.m. and 10:00 p.m. ET, including weekends.");
         } else if(!validateOverlapping(customer_Id, start_date_time, end_date_time)){
             // Adding the appointment to the database
@@ -155,6 +155,10 @@ public class AddAppointment implements Initializable {
         /*
         ObservableList<String> populateTime = FXCollections.observableArrayList();
         ObservableList<String> populateDate = FXCollections.observableArrayList();
+                // Initialize start and end time combo boxes
+        startTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), BUSINESS_START_TIME, BUSINESS_END_TIME));
+        endTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), BUSINESS_START_TIME, BUSINESS_END_TIME));
+
         */
 
         // Populating dropdowns with data
@@ -166,9 +170,9 @@ public class AddAppointment implements Initializable {
         customerBox.getSelectionModel().selectFirst();
         startDate.setValue(LocalDate.now());
         endDate.setValue(LocalDate.now());
-        startTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), LocalTime.of(8, 0), 14));
+        startTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), BUSINESS_START_TIME, BUSINESS_END_TIME));
         startTime.getSelectionModel().selectFirst();
-        endTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), LocalTime.of(9, 0), 13));
+        endTime.setItems(initializeBusinessHours(ZoneId.systemDefault(), ZoneId.of("America/New_York"), BUSINESS_START_TIME, BUSINESS_END_TIME));
         endTime.getSelectionModel().selectFirst();
     }
 
@@ -177,17 +181,21 @@ public class AddAppointment implements Initializable {
      *
      * @param systemZoneId   The system time zone.
      * @param businessZoneId The business time zone.
-     * @param startHour       The starting hour of the business day.
-     * @param workingHours    The number of working hours in the business day.
+     * @param startHour      The starting hour of the business day.
+     * @param endHour        The ending hour of the business day.
      * @return ObservableList of LocalTime representing business hours.
      */
-    private static  ObservableList<LocalTime> initializeBusinessHours(ZoneId systemZoneId, ZoneId businessZoneId, LocalTime startHour, int workingHours) {
+    private static  ObservableList<LocalTime> initializeBusinessHours(ZoneId systemZoneId, ZoneId businessZoneId, LocalTime startHour, LocalTime endHour) {
         ZonedDateTime businessStartTime = ZonedDateTime.of(LocalDate.now(), startHour, businessZoneId);
         ZonedDateTime localStartTime = businessStartTime.withZoneSameInstant(systemZoneId);
         int localStartingHour = localStartTime.getHour();
 
-        return IntStream.range(localStartingHour, localStartingHour + workingHours)
-                .filter(hour -> hour >= 8 && hour <= 22)
+        ZonedDateTime businessEndTime = ZonedDateTime.of(LocalDate.now(), endHour, businessZoneId);
+        ZonedDateTime localEndTime = businessEndTime.withZoneSameInstant(systemZoneId);
+        int localEndingHour = localEndTime.getHour();
+
+        return IntStream.range(localStartingHour, localEndingHour)
+                .filter(hour -> hour >= BUSINESS_START_TIME.getHour() && hour <= BUSINESS_END_TIME.getHour())
                 .mapToObj(i -> LocalTime.of(i / 2, (i % 2) * 30))
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
     }
@@ -198,7 +206,7 @@ public class AddAppointment implements Initializable {
      *<b>Lambda Expression 1</b>
      *
      */
-    private static BiPredicate<LocalTime, LocalTime> validateBusinessHours =
+    static BiPredicate<LocalTime, LocalTime> validateBusinessHours =
             (startTime, endTime) -> startTime.isBefore(BUSINESS_START_TIME) || endTime.isAfter(BUSINESS_END_TIME);
 
     /*
