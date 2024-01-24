@@ -53,18 +53,26 @@ public class UpdateCustomer implements Initializable {
      * @throws SQLException If there is an error with the SQL query.
      */
     public void getCustomerInfo(Customer customer) throws SQLException {
-        // Set values in the input fields based on the selected customer
-        customerID.setText(Integer.toString(customer.getCustomerId()));
-        Name.setText(customer.getCustomerName());
-        Address.setText(customer.getAddress());
-        phoneNumber.setText(customer.getPhone());
-        postalCode.setText(customer.getPostalCode());
-        model.Division d = DivisionQuery.returnDivisionLevel(customer.getDivisionId());
-        Division.setValue(d);
-        model.Country c = CountryQuery.returnCountry(customer.getCustomerId());
-        Country.setValue(c);
-        model.Country C = Country.getValue();
-        Division.setItems(DivisionQuery.showDivision(C.getCountryId()));
+        try {// Set values in the input fields based on the selected customer
+            customerID.setText(Integer.toString(customer.getCustomerId()));
+            Name.setText(customer.getCustomerName());
+            Address.setText(customer.getAddress());
+            phoneNumber.setText(customer.getPhone());
+            postalCode.setText(customer.getPostalCode());
+
+            model.Division level = DivisionQuery.returnDivisionLevel(customer.getDivisionId());
+            Division.setValue(level);
+
+            model.Country country = CountryQuery.returnCountry(customer.getCountryId());
+            Country.setValue(country);
+
+            model.Country countryValue = Country.getValue();
+            if (countryValue != null) {
+                Division.setItems(DivisionQuery.showDivision(countryValue.getCountryId()));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -112,7 +120,7 @@ public class UpdateCustomer implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (NumberFormatException | IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -147,10 +155,16 @@ public class UpdateCustomer implements Initializable {
      * @throws SQLException If there is an error with the SQL query.
      */
     public void onCountry(ActionEvent actionEvent) throws SQLException {
-        // Retrieve the selected country ID and update the Division dropdown
-        int county_Id = Country.getValue().getCountryId();
-        Division.setItems(DivisionQuery.showDivision(county_Id));
-        Division.getSelectionModel().selectFirst();
+        try {// Retrieve the selected country ID and update the Division dropdown
+            model.Country selectedCountry = Country.getValue();
+            if (selectedCountry != null) {
+                int county_Id = selectedCountry.getCountryId();
+                Division.setItems(DivisionQuery.showDivision(county_Id));
+                Division.getSelectionModel().selectFirst();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

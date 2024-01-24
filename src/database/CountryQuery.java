@@ -61,17 +61,19 @@ public class CountryQuery {
             String query = "SELECT Country_ID, Country FROM countries WHERE Country_ID = ?";
             PreparedStatement preparedStatement = JDBC.connection.prepareStatement(query);
             preparedStatement.setInt(1, countryId);
-            preparedStatement.execute();
+            ResultSet resultSet = preparedStatement.executeQuery();;
 
-            ResultSet resultSet = preparedStatement.getResultSet();
-            resultSet.next();
+            if (resultSet.next()){
+                // Extracting country details from the result set
+                int country_Id = resultSet.getInt("Country_ID");
+                String countryName = resultSet.getString("Country");
 
-            // Extracting country details from the result set
-            int country_Id = resultSet.getInt("Country_ID");
-            String countryName = resultSet.getString("Country");
-
-            // Returning Country object
-            return new Country(country_Id, countryName);
+                // Returning Country object
+                return new Country(country_Id, countryName);
+            } else {
+                // No result found, return null or handle accordingly
+                return null;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

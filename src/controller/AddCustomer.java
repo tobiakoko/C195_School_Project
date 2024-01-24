@@ -83,7 +83,8 @@ public class AddCustomer implements Initializable {
     public void onSave(ActionEvent actionEvent) {
         try{
             // Extracting input data from the form
-            int customer_ID = Integer.parseInt(customerID.getText());
+            //int customer_ID = Integer.parseInt(customerID.getText());
+
             String name = Name.getText();
             if (name.isEmpty()){
                 errorAlert("Customer Name is blank", "The customer Name field is blank. \nPlease enter a valid name" );
@@ -111,8 +112,8 @@ public class AddCustomer implements Initializable {
                 return;
             }
 
-
-            int division_ID = Division.getValue().getDivisionId();
+            // Extracting division_ID only if a division is selected
+            int division_ID = (Division.getValue() != null) ? Division.getValue().getDivisionId() : 0;
 
             // Adding the customer to the database
             CustomerQuery.addCustomer(name, address, postal_Code, phone, division_ID);
@@ -124,7 +125,8 @@ public class AddCustomer implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (NumberFormatException | IOException | SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            errorAlert("Error", "An unexpected error occurred. Please try again.");
         }
     }
 

@@ -1,15 +1,2 @@
-Username: sqlUser, Timestamp: 2024-01-19T22:10:25.288585600, Success: false
-Username: sqlUser, Timestamp: 2024-01-19T22:10:25.288585600, Success: false
-Username: Username, Timestamp: 2024-01-19T19:14:08.246320200, Success: false
-Username: sqlUser, Timestamp: 2024-01-19T19:14:08.246320200, Success: false
-Username: sqlUser, Timestamp: 2024-01-19T19:14:08.246320200, Success: false
-Username: sqlUser, Timestamp: 2024-01-19T21:19:33.231938300, Success: false
-Username: sqlUser, Timestamp: 2024-01-19T21:19:33.231938300, Success: false
-Username: admin, Timestamp: 2024-01-19T21:20:23.522137800, Success: true
-Username: test, Timestamp: 2024-01-21T01:40:37.636305500, Success: true
-Username: test, Timestamp: 2024-01-22T08:56:33.914039300, Success: true
-Username: test, Timestamp: 2024-01-22T08:59:38.996481800, Success: true
-Username: test, Timestamp: 2024-01-22T09:09:32.440538600, Success: true
-Username: test, Timestamp: 2024-01-22T09:10:39.335854800, Success: true
-Username: test, Timestamp: 2024-01-22T09:16:09.535258800, Success: true
-Username: test, Timestamp: 2024-01-22T09:22:19.744276900, Success: true
+Username: test, Timestamp: 2024-01-24T12:26:32.184001400, Success: true
+Username: test, Timestamp: 2024-01-24T12:27:05.278142600, Success: true

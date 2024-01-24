@@ -207,7 +207,7 @@ public class AppointmentQuery {
     public static ObservableList<Appointment> getMonthlyAppointment(){
         ObservableList<Appointment> monthAppointments = FXCollections.observableArrayList();
         try {
-            String query = "SELECT * FROM appointments INNER JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID WHERE WHERE Start >=? AND Start <=?";
+            String query = "SELECT * FROM appointments INNER JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID WHERE Start >=? AND Start <=?";
             PreparedStatement statement = JDBC.connection.prepareStatement(query);
             statement.setTimestamp(1, Timestamp.valueOf(now));
             statement.setTimestamp(2, Timestamp.valueOf(monthLater));

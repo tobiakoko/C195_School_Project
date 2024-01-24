@@ -112,7 +112,7 @@ public class CustomerQuery {
      * @param divisionId The new division ID for the customer.
      */
     public static void updateCustomer(int customerId, String customerName, String address, String postalCode, String phone, int divisionId) {
-        String query ="UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ?, WHERE Customer_ID = ?";
+        String query ="UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ? WHERE Customer_ID = ?";
         try (PreparedStatement preparedStatement = JDBC.connection.prepareStatement(query)){
             preparedStatement.setString(1, customerName);
             preparedStatement.setString(2, address);
@@ -121,7 +121,6 @@ public class CustomerQuery {
             preparedStatement.setInt(5, divisionId);
             preparedStatement.setInt(6, customerId);
             preparedStatement.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -142,7 +141,7 @@ public class CustomerQuery {
      * @throws SQLException If a SQL exception occurs during the database interaction.
      */
     public static void addCustomer(String customerName, String address, String postalCode, String phone, int divisionId) throws SQLException {
-        String query = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Division_ID) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Division_ID) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = JDBC.connection.prepareStatement(query);
         preparedStatement.setString(1, customerName);
         preparedStatement.setString(2, address);

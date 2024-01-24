@@ -85,37 +85,28 @@ public class AddAppointment implements Initializable {
         LocalTime start_time = startTime.getSelectionModel().getSelectedItem();
         LocalDate end_date = endDate.getValue();
         LocalTime end_time = endTime.getSelectionModel().getSelectedItem();
+
+        // Validating input fields
+        if(start_date == null || start_time == null || end_date == null || end_time == null) {
+            errorAlert("Missing Fields", "Please fill in all date and time fields.");
+
+        }
         LocalDateTime start_date_time = LocalDateTime.of(start_date.getYear(), start_date.getMonth(), start_date.getDayOfMonth(), start_time.getHour(), start_time.getMinute());
         LocalDateTime end_date_time = LocalDateTime.of(end_date.getYear(), end_date.getMonth(), end_date.getDayOfMonth(), end_time.getHour(), end_time.getMinute());
 
-        // Validating input fields
-        if(start_date == null) {
-            errorAlert("Please select a valid start date", "The start date field is blank. Please choose a date");
+        //Appointment Time OverLap and Business hours validation needed here
+        if(!validateBusinessHours(start_time, end_time)){
+            errorAlert("Out of Bounds Error", "Appointments must be scheduled between 8:00 a.m. and 10:00 p.m. ET, including weekends.");
+        } else if(!validateOverlapping(customer_Id, start_date_time, end_date_time)){
+            // Adding the appointment to the database
+            AppointmentQuery.addAppointment(Title, Description, Location, Type, start_date_time, end_date_time, customer_Id, user_Id, Contact);
 
-        }else if(start_time == null) {
-            errorAlert("Please select a valid start time", "The start time field is blank. Please choose a start time");
-            return;
-        }else if(end_date == null) {
-            errorAlert("Please select a valid end date", "The end date field is blank. Please choose a date");
-            return;
-        }else if(end_time == null) {
-            errorAlert("Please select a valid end time", "The end time field is blank. Please choose a time");
-            return;
-        } else {
-            //Appointment Time OverLap and Business hours validation needed here
-            if(!validateBusinessHours(start_time, end_time)){
-                errorAlert("Out of Bounds Error", "Appointments must be scheduled between 8:00 a.m. and 10:00 p.m. ET, including weekends.");
-            } else if(!validateOverlapping(customer_Id, start_date_time, end_date_time)){
-                // Adding the appointment to the database
-                AppointmentQuery.addAppointment(Title, Description, Location, Type, start_date_time, end_date_time, customer_Id, user_Id, Contact);
-
-                // Redirecting to the main appointment screen
-                Parent parent = FXMLLoader.load(getClass().getResource("../view/AppointmentScreen.fxml"));
-                Scene scene = new Scene(parent);
-                Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                stage.setScene(scene);
-                stage.show();
-            }
+            // Redirecting to the main appointment screen
+            Parent parent = FXMLLoader.load(getClass().getResource("../view/AppointmentScreen.fxml"));
+            Scene scene = new Scene(parent);
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
         }
     }
 
