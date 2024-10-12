@@ -1,7 +1,8 @@
-# GUI-Based Scheduling Desktop Application
+# SchedulePro - GUI-Based Scheduling Desktop Application
 
 ## Overview
-The Scheduling Desktop Application is a GUI-based solution designed to streamline scheduling tasks for a global consulting organization. It enables users to create, manage, and view customer records and appointments, ensuring efficient scheduling practices and enhanced organizational productivity.
+SchedulePro is a robust Java-based desktop application designed to streamline appointment management for global consulting organizations. It offers intuitive customer record management, efficient scheduling capabilities, and insightful reporting features, enhancing productivity and facilitating seamless global operations.
+
 
 ## Table of Contents
 1. [Project Information](#project-information)
@@ -12,7 +13,7 @@ The Scheduling Desktop Application is a GUI-based solution designed to streamlin
 6. [Contact Information](#contact-information)
 
 ## Project Information
-- **Title**: GUI-Based Scheduling Desktop Application
+- **Title**: SchedulePro - GUI-Based Scheduling Desktop Application
 - **Author**: Daniel Akoko
 - **Version**: 1.0
 - **Release Date**: January 20th, 2024
